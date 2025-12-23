@@ -168,8 +168,6 @@ The model is evaluated using:
 
 **Data:** `PHENOTYPES_CLASSIFICATION_CODES_DATA/GDSC1_GDSC2_Combined_Dataset_With_SMILES.csv`
 
-**Results:** `PHENOTYPES_CLASSIFICATION_CODES_DATA/results_zscore_individual/`
-
 ---
 
 ## Usage Instructions
@@ -252,7 +250,6 @@ predictions, probabilities = classifier.predict_with_model(X, model_data)
 | **Recall** | True positives / (True + False negatives) | 0-1 | Higher is better (sensitivity) |
 | **Specificity** | True negatives / (True + False positives) | 0-1 | Higher is better |
 | **MCC** | Matthews Correlation Coefficient | -1 to 1 | 1 = perfect, 0 = random, -1 = inverse |
-| **Balanced Accuracy** | Average of recall per class | 0-1 | Better for imbalanced datasets |
 
 ### Threshold Optimization
 
@@ -281,46 +278,10 @@ This maximizes the difference between true positive rate and false positive rate
 
 Both classification models save trained models as pickle files (`.pkl`) for compatibility with REINVENT and other tools.
 
-### Model Metadata
-
-Each saved model includes:
-
-```python
-{
-    'model': trained_classifier,           # The trained RandomForest model
-    'scaler': fitted_scaler,               # Fitted scaler (if used)
-    'fingerprint_type': 'ecfp_counts',     # Type of molecular fingerprint
-    'fingerprint_params': {...},           # Fingerprint generation parameters
-    'target_names': [...],                 # List of prediction targets
-    'threshold': 0.5,                      # Classification threshold
-    'performance_metrics': {...},          # Evaluation metrics
-    'training_date': '2024-XX-XX',        # Model training date
-    'n_features': 2048                     # Number of input features
-}
-```
-
-### Loading Saved Models
-
-Models can be loaded using standard pickle:
-
-```python
-import pickle
-
-with open('model_file.pkl', 'rb') as f:
-    model_data = pickle.load(f)
-
-model = model_data['model']
-scaler = model_data['scaler']
 ```
 
 ### REINVENT Integration
 
 These models are designed to be used as scoring components in REINVENT:
-
-1. Load the saved model
-2. Generate fingerprints for candidate molecules
-3. Apply the scaler (if present)
-4. Predict activity/sensitivity
-5. Use predictions as scoring function
 
 ---
