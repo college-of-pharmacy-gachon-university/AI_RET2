@@ -1,0 +1,170 @@
+{
+    "logging": {
+        "job_id": "demo",
+        "job_name": "Reinforcement learning demo",
+        "logging_frequency": 0,
+        "logging_path": "/home/medicina/Desktop/RL_RET_MUT_09November_exclude_so2_weight_changed_inception/progress.log",
+        "recipient": "local",
+        "result_folder": "/home/medicina/Desktop/RL_RET_MUT_09November_exclude_so2_weight_changed_inception/results",
+        "sender": "http://0.0.0.1"
+    },
+    "model_type": "default",
+    "parameters": {
+        "diversity_filter": {
+            "minscore": 0.4,
+            "minsimilarity": 0.4,
+            "name": "IdenticalMurckoScaffold",
+            "nbmax": 25
+        },
+        "inception": {
+            "memory_size": 100,
+            "sample_size": 10,
+            "smiles": [
+                "N#Cc1cnn(c12)cc(OCC)cc2-c(nc3)ncc3N(CC4)CCC4Oc(nc5)ccc5OC",
+                "O1CCNCC1COc(cn(c23)ncc2C#N)cc3-c4cnc(cn4)N(CC5)CCC5(C)N=C(O)c6c(C)cccc6Cl",
+                "O1CCNCC1COc(cn(c23)ncc2C#N)cc3-c4cnc(cn4)N(CC5)CCC5(C)N=C(O)c6c(Cl)cc(F)cn6",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3cnc(cn3)N(CC4)CCC4(O)Cc5c(F)cccn5",
+                "N#Cc1cnn(c12)cc(OC)cc2-c3cnc(cn3)N(CC4)CCC4(N=C(O)C(O)CO)Cc5ccccc5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3cnc(cn3)N(CC4)CCN4C(=O)C(O)c5cc(Cl)ccc5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3cnc(cn3)N(CC4)CC(O)C4N=C(O)c5c(F)cccc5Cl",
+                "C1COCCN1CCOc(cn(c23)ncc2C#N)cc3-c4cnc(nc4)N(CC5)CCC5(C)N=C(O)c6c(Cl)ccc(F)c6",
+                "C1COCCN1CCOc(cn(c23)ncc2C#N)cc3-c4ccc(cn4)N(CC5)CCC5(C)N=C(O)c6c(C)cccc6Cl",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(cc3)N(CC4)CCC4(CN(C)C)N=C(O)CC(C)C",
+                "c1ncccc1COc(cn(c23)ncc2C#N)cc3-c4ccc(cc4)N(CC5)CCN5Cc6ccc(nc6)OC",
+                "N#Cc1cnn(c12)cc(OC)cc2-c3ccc(nc3)N(CC4)CCN4Cc5ccccc5",
+                "N#Cc1cnn(c12)cc(OC)cc2-c3ccc(nc3)N(CC4)CCN4C(=O)Cc5ccc(F)cn5",
+                "N#Cc1cnn(c12)cc(OC)cc2-c3ccc(nc3)N(CC4)CCC4(CC)C(O)=NC(C)C",
+                "N#Cc1cnn(c12)cc(OC)cc2-c3ccc(nc3)N(CC4)CCC4(C)N(C)C(=O)c5c(Cl)cccn5",
+                "N#Cc1cnn(c12)cc(OC(=O)N(C)C)cc2-c3ccc(nc3)N(CC4)CCC4(C)N=C(O)OC(C)C",
+                "N#Cc1cnn(c12)cc(O)cc2-c3ccc(nc3)N(CC4)CCC4(C)N=C(O)c5c(C)ccc(F)c5",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(C4)CCC4(C)N=C(O)c5c(Cl)cccc5",
+                "N#Cc1cnn(c12)cc(OCc3cn(C)cn3)cc2-c4ccc(nc4)N(CC5)CCC5(C)N=C(O)c6c(Cl)cccn6",
+                "O1CCNCC1COc(cn(c23)ncc2C#N)cc3-c4ccc(nc4)N(CC5)CCC5(C)N=C(O)c6c(C)ccc(F)c6",
+                "C1COCCN1CCOc(cn(c23)ncc2C#N)cc3-c4ccc(nc4)N(CC5)CCC5(C)C(O)=NC(C)C(C)C",
+                "C1COCCN1CCOc(cn(c23)ncc2C#N)cc3-c4ccc(nc4)N(C5)CC(CC56)N6C(=O)c7ccc(nc7)OC",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(CC45)CC(COC4)N5Cc6ccc(nc6)OC",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(C4)CC(C5)C(C45)N=C(O)c6ccccc6",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(C4)CC(C5)C(C45)Nc6ccccn6",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(C4)CCC4N=C(O)c5c(F)cccc5F",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(CC4)CCC4Oc5ccc(nc5)OC",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(CC4)CCC4(O)Cc5cc(F)ccc5",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(CC4)CCC4(C)NC(=O)c5c(C)cc(F)cc5",
+                "N#Cc1cnn(c12)cc(OCCO)cc2-c3ccc(nc3)N(CC4)CCC45CN(C5)C(=O)OC(C)C",
+                "N#Cc1cnn(c12)cc(OCC(C)O)cc2-c3ccc(nc3)N(C4)CC4Oc5ccccn5",
+                "N#Cc1cnn(c12)cc(OCC(C)O)cc2-c3ccc(nc3)N(CC4)CCC4Oc5ccccn5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4S(=O)(=O)Cc5ccccc5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCN4C(=O)C(N(C)C)c5cc(Cl)ccc5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(C4)CC(CC45)N5C(=O)C(N(C)C)c6cc(Cl)ccc6",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(C4)CCC45CCCNC5",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(CC4)CCC4(C)NCc5c(C)ccc(F)c5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4(C)Nc(n5)c(F)ccc5C",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4(N=C(O)c5c(Cl)cccn5)COCCN6CCOCC6",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4(N=C(O)OC(C)C)CCNC5CCN(C)CC5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4(CN(CC5)CCN5CC)N=C(O)c6c(F)ccc(F)c6",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4(N=C(O)CO)Cc5ccccc5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4(C)S(=O)(=O)CC(C)C",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC45CN5S(=O)(=O)c(cc6)ccc6C",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4(CO)NC(=O)c(c5C#N)nccc5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4(C(O)=NCC(C)C)CN5CCCC5",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(CC4)CCC4(C)C(O)=Nc5c(F)cccc5F",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4(C)N=C(O)OC5CCCC5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CC(OCCN(C)C)C4N=C(O)OC(C)(C)C",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CC(O)C4N=C(O)c5c(F)cccc5Cl",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CC(O)C4NS(=O)(=O)CC(C)C",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(C4)CC(OC)C4N=C(O)c5ccccc5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(C4)CC(C4N)Oc5ccccn5",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(C4)C(CC45)CN5c6ccc(nc6)OC",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(C4)CCC(C4Cc5ccccn5)N=C(O)CC6CNCCO6",
+                "N#CCc1cnn(c12)cc(OC)cc2-c3ccc(nc3)N(C4)CC(CC45)N5Cc6ccc(nc6)OC",
+                "c1nccn1CCOc(cn(c23)ncc2C#N)cc3-c4ccc(nc4)N(C5)CC(CC56)N6Cc7ccc(nc7)OC",
+                "N#Cc1cnn(c12)cc(OCCO)cc2-c3ccc(nc3)N(C4)CC(CC45)N5Cc6ccc(cn6)OC",
+                "N#Cc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(cc3)N(C4)CC(CC45)N5Cc6ccc(nc6)OC",
+                "C1COCCN1CCOc(cn(c23)ncc2C#N)cc3-c4cnc(nc4)N(C5)CC(CC56)N6Cc7cc(Cl)c(nc7)OC",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3cnc(cn3)N(C4)CC(CC45)N5Cc6cc(F)c(cc6)OC",
+                "COc(nc1)ccc1CN2C(CC23)CN(C3)c(cn4)ncc4-c5cc(OC)cn(c56)ncc6Cl",
+                "Clc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(C4)CC(C4N)Oc5ccc(nc5)OC",
+                "CC(C)CC(O)=NC1C(O)CN(CC1)c(nc2)ccc2-c3cc(OCC)cn(c34)ncc4Cl",
+                "Clc1cnn(c12)cc(OCC(C)(C)O)cc2-c3ccc(nc3)N(CC4)CCC4Oc5ccccn5",
+                "Cc1ccc(nn1)OC2CCN(CC2)c(nc3)ccc3-c4cc(OC)cn(c45)ncc5Cl",
+                "n1cccc(Cl)c1C(O)=NC2(C)CCN(CC2)c(cn3)ncc3-c4cc(OC)cn(c45)ncc5Cl",
+                "Clc1cccc(F)c1C(O)=NC2(C)CCN(CC2)c(nc3)ccc3-c4cc(OC)cn(c45)ncc5Cl",
+                "n1cccc(Cl)c1C(O)=NC2(C)CCN(CC2)c(nc3)ccc3-c4cc(OC)cn(c45)ncc5C6CC6",
+                "Clc1cccc(F)c1C(O)=NC2(C)CCN(CC2)c(nc3)ccc3-c4cc(OC)cn(c45)ncc5"
+            ]
+        },
+        "reinforcement_learning": {
+            "agent": "/home/medicina/ReinventCommunity/notebooks/models/chembl_train.prior",
+            "batch_size": 128,
+            "learning_rate": 0.0001,
+            "margin_threshold": 50,
+            "n_steps": 3000,
+            "prior": "/home/medicina/ReinventCommunity/notebooks/models/chembl_train.prior",
+            "sigma": 128
+        },
+        "scoring_function": {
+            "name": "custom_product",
+            "parallel": false,
+            "parameters": [
+                {
+                    "component_type": "predictive_property",
+                    "name": "RET",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/ReinventCommunity/notebooks/models/RET_MUTANT_final_model_Hyper.pkl",
+                        "radius": 3,
+                        "scikit": "regression",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 10,
+                            "k": 0.25,
+                            "low": 5,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 5
+                },
+                {
+                    "component_type": "qed_score",
+                    "name": "QED",
+                    "weight": 1
+                },
+                {
+                    "component_type": "custom_alerts",
+                    "name": "Custom alerts",
+                    "specific_parameters": {
+                        "smiles": [
+                            "[*;r8]",
+                            "[*;r9]",
+                            "[*;r10]",
+                            "[*;r11]",
+                            "[*;r12]",
+                            "[*;r13]",
+                            "[*;r14]",
+                            "[*;r15]",
+                            "[*;r16]",
+                            "[*;r17]",
+                            "[#8][#8]",
+                            "[#6;+]",
+                            "[#16][#16]",
+                            "[#7;!n][S;!$(S(=O)=O)]",
+                            "[#7;!n][#7;!n]",
+                            "[#8]=[#16]=[#8]",
+                            "C(=[O,S])[O,S]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#16;!s]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#7;!n]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#8;!o]",
+                            "[#8;!o][C;!$(C(=[O,N])[N,O])][#16;!s]",
+                            "[#8;!o][C;!$(C(=[O,N])[N,O])][#8;!o]",
+                            "[#16;!s][C;!$(C(=[O,N])[N,O])][#16;!s]"
+                        ]
+                    },
+                    "weight": 1
+                }
+            ]
+        }
+    },
+    "run_type": "reinforcement_learning",
+    "version": 3
+}

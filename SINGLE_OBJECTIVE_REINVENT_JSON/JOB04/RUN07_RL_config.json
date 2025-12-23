@@ -1,0 +1,210 @@
+{
+    "logging": {
+        "job_id": "demo",
+        "job_name": "Reinforcement learning demo",
+        "logging_frequency": 0,
+        "logging_path": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/chembl_31_RL/jobs/RL_RET_MUT_IdenticalMurckoScaffold_New_Inception_20Nov_run3/progress.log",
+        "recipient": "local",
+        "result_folder": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/chembl_31_RL/jobs/RL_RET_MUT_IdenticalMurckoScaffold_New_Inception_20Nov_run3/results",
+        "sender": "http://0.0.0.1"
+    },
+    "model_type": "default",
+    "parameters": {
+        "diversity_filter": {
+            "minscore": 0.4,
+            "minsimilarity": 0.4,
+            "name": "IdenticalMurckoScaffold",
+            "nbmax": 25
+        },
+        "inception": {
+            "memory_size": 100,
+            "sample_size": 10,
+            "smiles": [
+                "COc1cc2nccc(Oc3ccc(NC(=O)C4(C(=O)Nc5ccc(F)cc5)CC4)cc3)c2cc1OC",
+                "OCC(Nc1cnc(-c2cc(Cl)ccc2O)c(-c2ccc3cnccc3c2)c1)c1ccccc1",
+                "CCOc1cc(-c2ccc(NC(O)=Nc3ccc(CN4CCN(CC)CC4)c(C(F)(F)F)c3)c(F)c2)cnc1O",
+                "COc1cc2c(Oc3ccc(N=C(O)NN4C(=O)CSC4c4c(F)cccc4F)c(F)c3)ccnc2cc1OCCCN1CCCC1",
+                "CNC(=O)c1ncc(C#Cc2cc(C(=O)Nc3ccc(CN4CCN(CCO)CC4)c(C(F)(F)F)c3)ccc2C)n1C",
+                "CCOc1cc(O)ncc1-c1ccc(CC(O)=Nc2ccc(CC(C)(C)N)c(C(F)(F)F)c2)c(F)c1",
+                "CC(C)n1cc(-c2cc3cccnc3[nH]2)c2c(N)ncnc21",
+                "COc1cc2ncnc(Nc3cc(O)c(F)cc3F)c2cc1OC",
+                "CNC1CC2OC(C)(C1OC)n1c3ccccc3c3c4c(c5c6ccccc6n2c5c31)C(O)=NC4",
+                "N=c1[nH]cc(-c2cnn(CCO)c2)c2scc(-c3ccc(NC(=O)Nc4ccc(OC(F)F)cc4)cc3)c12",
+                "Cn1nc(N)c2c(-c3ccc(NC(O)=Nc4cccc(C(F)(F)F)c4)cc3)cncc21",
+                "CC(C)(C)c1cc(=NC(=O)Cc2ccc(-n3cnc4cc(-c5ccc(S(C)(=O)=O)cc5)ccc43)cc2)[nH]o1",
+                "C=CC(=O)N1CCCC1C(O)=Nc1cc2c(Nc3cccc(Cl)c3F)ncnc2cc1OCCOC",
+                "CC(C)(C)n1nc(-c2[nH]c3ncccc3c2Cl)c2c(N)ncnc21",
+                "COCc1ccc(NC(=O)C2=C(SC)C(C3(C)CC3)c3nc[nH]c(=N)c32)cc1",
+                "CC(C)(N)c1cc(C(O)=NC2CCc3ccc(Oc4ccnc5c4CCC(O)=N5)cc3C2)cc(C(F)(F)F)c1",
+                "CN(C)CC(=O)N1CCC(c2ccc(NC(=O)c3ncc(C#N)[nH]3)c(C3=CCCCC3)c2)CC1",
+                "CCc1nc(C(N)=O)c(Nc2ccc(N3CCC(N4CCN(C)CC4)CC3)cc2)nc1NC1CCC(O)CC1",
+                "Nc1ncnc2c1c(-c1c[nH]c3nccc-3c1)nn2C1CCCC1",
+                "OC(=NC1CC1)Nc1c[nH]nc1-c1nc2cc(CN3CCOCC3)ccc2[nH]1",
+                "CN1CCN(Cc2ccc(N=C(O)CNc3ccc(-c4ccc(N=C(O)C5CC5)nc4)cc3F)cc2C(F)(F)F)CC1",
+                "Cc1cccc(N=C(O)Nc2ccc(-c3csc4c(-c5cnn(CCO)c5)c[nH]c(=N)c34)cc2F)c1",
+                "COc1ccc(CN2C3CC2CN(c2cnc(-c4cc(OCC5CNCCO5)cn5ncc(C#N)c45)cn2)C3)cn1",
+                "CCc1nc(C(N)=O)c(=Nc2ccc(N3CCN(C)CC3)c(F)c2)[nH]c1NC1CCOCC1",
+                "Cc1cc2c(Cc3ccc(Br)cc3F)ncnc2cc1OCC1CCN(C)CC1",
+                "Nc1ncnc2c1c(-c1[nH]c3ncccc3c1Cl)nn2C1CCC(O)C1",
+                "Cc1cc(Nc2ncc(F)c(=NC3C4C=CC(C4)C3C(=N)O)[nH]2)ccc1N1CCN(C)CC1",
+                "CCN(CC)CCN=C(O)c1c(C)[nH]c2c1=CCCC=2C1C(O)=Nc2ccc(F)cc21",
+                "CCN(CC)CCN=C(O)c1c(C)[nH]c2c1CCC=C2c1c(O)[nH]c2ccc(F)cc12",
+                "CCN(CC)CCN=C(O)c1c(C)[nH]c2c1CCCC2=C1C(O)=Nc2ccc(F)cc21",
+                "CC(C)n1nc(-c2cc(C3CC3)on2)c2c(N)ncnc21",
+                "CC(C)(C)c1cc(=NC(=O)Nc2ccc(-c3cn4c(n3)sc3cc(OCCN5CCOCC5)ccc34)cc2)[nH]o1",
+                "CCN(CC)CCCN=C(O)c1c[nH]c(=N)c2c(-c3ccc(NC(O)=Nc4cccc(C)c4)cc3)csc12",
+                "COC(C(=O)N1Cc2[nH]nc(N=C(O)c3ccc(N4CCN(C)CC4)cc3)c2C1)c1ccccc1",
+                "CC1(C)c2cc(C3CCN(CC4CCOCC4)CC3)ccc2C(=O)c2c1[nH]c1cc(C#N)ccc21",
+                "COc1ccc(-c2cnn3c(N)c(-c4ccccc4)c(=NC4CC(C)(C)N(C)C(C)(C)C4)[nH]c23)cc1OC",
+                "COc1cc2ncnc(Oc3cccc(N=C(O)N=c4cc(C(C)(C)C(F)(F)F)o[nH]4)c3)c2cc1OC",
+                "CCOc1cc(-c2ccc(N3CCC(N=C(O)c4cc(F)ccc4Cl)C(O)C3)nc2)c2c(C#N)cnn2c1",
+                "COc1cc(Nc2ncc(F)c(N=c3ccc4c([nH]3)N=C(O)C(C)(C)O4)n2)cc(OC)c1OC",
+                "COc1cc2cc(-c3ccc(CC(=O)N=c4cc(C(C)(C)C(F)(F)F)[nH][nH]4)cn3)cnc2cc1OC",
+                "Cc1ccc(NC(=O)Nc2ccc(-c3csc4ncnc(N)c34)cc2)cc1C",
+                "CCN(CC)CCN=C(O)c1c(C)[nH]c(C=C2C(O)=Nc3ccc(F)cc32)c1C",
+                "CC(C)n1nc(-c2cc3cccnc3[nH]2)c2c(=N)[nH]cc(Cl)c21",
+                "N=c1nc(Nc2ccc3c(c2)CCC(N2CCCC2)CC3)[nH]n1-c1cc2c(nn1)-c1ccccc1CCC2",
+                "Cc1ccc(O)cc1N=c1cc[nH]c2ccc(S(C)(=O)=O)cc12",
+                "Cc1cc(O)nnc1-c1ccc(N=C(O)Nc2cc(C(F)(F)F)ccc2F)c(Cl)c1",
+                "CC(O)=NCC(=O)N1C2CCC1c1cc(Nc3ncc(C(F)(F)F)c(=NC4CCC4)[nH]3)ccc12",
+                "C=C1C=C(N2CCOCC2)Cc2nc(-c3c(NCC(O)c4cccc(Cl)c4)ccnc3O)[nH]c21",
+                "N=c1[nH]cc(C=CC(O)=NCCCn2ccnc2)c2scc(-c3ccc(Br)cc3)c12",
+                "CC(Cc1c(F)c(F)cc(F)c1F)Nc1ccnc(O)c1-c1nc2cc3c(cc2[nH]1)C(=O)N(CCN(C)C)C3",
+                "CNS(=O)(=O)c1ccccc1N=c1[nH]c(Nc2cc(OC)c(OC)c(OC)c2)ncc1Cl",
+                "COc1ccc2c(c1)C(=Cc1cc3c([nH]1)CCN(C(=O)CCN)C3)C(O)=N2",
+                "CC(=O)N1CCc2[nH]c(C=C3C(O)=Nc4ccc(C#N)cc43)cc2C1",
+                "CC12OC(CC1(O)CO)n1c3ccccc3c3c4c(O)[nH]cc4c4c5ccccc5n2c4c31",
+                "CN=C(O)c1ccc2cc(-c3cc(C(C)C)n4ncnc(N)c34)[nH]c2c1",
+                "CC(C)Cn1c2ccc(Nc3ncccn3)cc2c2c3c(c4c(c21)CCc1nn(C)cc1-4)C(=O)NC3",
+                "CN1CCN(c2ccc(Nc3ncc(Cl)c(Nc4ccc5n[nH]cc5c4)n3)cc2)CC1",
+                "NC(COc1cncc(-c2ccc3c(c2)C(=Cc2ccc[nH]2)C(O)=N3)c1)Cc1ccccc1",
+                "CN1CCN(c2ccc3nc(-c4c(O)nc5cccc(F)c5c4N)[nH]c3c2)CC1",
+                "CNC(=O)c1cc(Oc2ccc(NC(O)=Nc3ccc(Cl)c(C(F)(F)F)c3)c(F)c2)ccn1",
+                "C=CC(=O)N1CCCC(n2nc(-c3ccc(Oc4ccccc4)cc3)c3c(N)ncnc32)C1",
+                "Cc1ccc(C(O)=Nc2ccc(Cl)c(C(F)(F)F)c2)cc1N=C(O)C1(c2nc[nH]c3ncnc2-3)CC1",
+                "Oc1cccc(Nc2ccnc3cc(-c4ccccn4)ccc23)c1",
+                "COC(=O)Nc1ccc(-c2c(OC3CCN(C)CC3)nc3c(-c4ccc(OC)c(OC)c4)cnn3c2N)cc1",
+                "CN=c1nc2c(c[nH]1)c(-c1ccc(N3CCN(C)CC3)cc1)nn2CC1CCCC1",
+                "CCN1CCN(c2ccc(Nc3nccc(-c4c(-c5cccc(C(O)=Nc6ccccc6F)c5)nc5ccccn45)n3)cc2)CC1",
+                "COCc1ccc(N=C(O)c2cn(C(C)(C)C)c3ncnc(N)c23)c(OC)c1",
+                "COC(=O)c1ccc2c(c1)N=C(O)C2=C(Nc1ccc2c(c1)N(C(=O)CN1CCOCC1)CC2)c1ccccc1",
+                "c1ccc(CN=c2nc(N=c3cc(C4CC4)[nH][nH]3)c3sccc3[nH]2)cc1",
+                "CCN(CC)CCOc1ccc(N=c2nc3c(c[nH]2)cc(-c2c(Cl)cccc2Cl)c(=O)n3C)cc1",
+                "COc1cccc(OC)c1CN=c1[nH]c(=NC2CCCCC2)[nH]c2ccc(Cl)cc12",
+                "CC(C)n1nc(C#Cc2ccccc2)c2c(N)ncnc21",
+                "CN1CCN(C2CCC(n3cc(-c4ccc(Oc5ccccc5)cc4)c4c(N)ncnc43)CC2)CC1",
+                "CCN(C(C)=O)c1ccc(Nc2nc3[nH]cnc3c(=NC3CC3)[nH]2)cc1",
+                "COc1ccc(N=C(O)Nc2ccc(-c3cccc4onc(N)c34)cc2)cc1Cl",
+                "OC1=Nc2cc(-c3ccc(O)cc3)ccc2C1=Cc1ccc[nH]1",
+                "Nc1ncnc2c1c(-c1cccc(O)c1)cn2C1CC(CN2CCC2)C1",
+                "Cc1cc(=Nc2cc(N3CCN(C)CC3)nc(Sc3ccc(NC(=O)C4CC4)cc3)n2)[nH][nH]1",
+                "Nc1ncnc2c1c(C(O)=Nc1cccc(Cl)c1)nn2C1CCCC1",
+                "COC(=O)c1ccc2c(c1)N=C(O)C2C(=Nc1ccc(N(C)C(=O)CN2CCN(C)CC2)cc1)c1ccccc1"
+            ]
+        },
+        "reinforcement_learning": {
+            "agent": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/chembl_31_RL/jobs/models/chembl_train.prior",
+            "batch_size": 128,
+            "learning_rate": 0.0001,
+            "margin_threshold": 50,
+            "n_steps": 3000,
+            "prior": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/chembl_31_RL/jobs/models/chembl_train.prior",
+            "sigma": 128
+        },
+        "scoring_function": {
+            "name": "custom_product",
+            "parallel": false,
+            "parameters": [
+                {
+                    "component_type": "predictive_property",
+                    "name": "RET-MUT",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/chembl_31_RL/jobs/models/RET_MUTANT_final_model_Hyper.pkl",
+                        "radius": 3,
+                        "scikit": "regression",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 9,
+                            "k": 0.25,
+                            "low": 4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 5
+                },
+                {
+                    "component_type": "num_hba_lipinski",
+                    "name": "HB-acceptors (Lipinski)",
+                    "specific_parameters": {
+                        "transformation": {
+                            "high": 11,
+                            "low": 6,
+                            "transformation_type": "step"
+                        }
+                    },
+                    "weight": 1
+                },
+                {
+                    "component_type": "num_hbd_lipinski",
+                    "name": "HB-donors (Lipinski)",
+                    "specific_parameters": {
+                        "transformation": {
+                            "high": 3,
+                            "low": 0,
+                            "transformation_type": "step"
+                        }
+                    },
+                    "weight": 1
+                },
+                {
+                    "component_type": "slogp",
+                    "name": "SLogP",
+                    "specific_parameters": {
+                        "transformation": {
+                            "high": 6.3,
+                            "low": 2.5,
+                            "transformation_type": "step"
+                        }
+                    },
+                    "weight": 1
+                },
+                {
+                    "component_type": "custom_alerts",
+                    "name": "Custom alerts",
+                    "specific_parameters": {
+                        "smiles": [
+                            "[*;r8]",
+                            "[*;r9]",
+                            "[*;r10]",
+                            "[*;r11]",
+                            "[*;r12]",
+                            "[*;r13]",
+                            "[*;r14]",
+                            "[*;r15]",
+                            "[*;r16]",
+                            "[*;r17]",
+                            "[#8][#8]",
+                            "[#6;+]",
+                            "[#16][#16]",
+                            "[#7;!n][S;!$(S(=O)=O)]",
+                            "[#7;!n][#7;!n]",
+                            "C(=[O,S])[O,S]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#16;!s]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#7;!n]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#8;!o]",
+                            "[#8;!o][C;!$(C(=[O,N])[N,O])][#16;!s]",
+                            "[#8;!o][C;!$(C(=[O,N])[N,O])][#8;!o]",
+                            "[#16;!s][C;!$(C(=[O,N])[N,O])][#16;!s]"
+                        ]
+                    },
+                    "weight": 1
+                }
+            ]
+        }
+    },
+    "run_type": "reinforcement_learning",
+    "version": 3
+}

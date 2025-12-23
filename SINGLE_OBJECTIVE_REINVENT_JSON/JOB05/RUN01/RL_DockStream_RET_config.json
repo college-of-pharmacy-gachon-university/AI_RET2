@@ -1,0 +1,107 @@
+{
+    "logging": {
+        "job_id": "demo",
+        "job_name": "Reinforcement learning DockStream demo",
+        "logging_frequency": 0,
+        "logging_path": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/chembl_31_RL/RL_HYBRID_7JU6_3000epochs_REV/progress-dockstream.log",
+        "recipient": "local",
+        "result_folder": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/chembl_31_RL/RL_HYBRID_7JU6_3000epochs_REV/results-dockstream",
+        "sender": "http://0.0.0.1"
+    },
+    "model_type": "default",
+    "parameters": {
+        "diversity_filter": {
+            "bucket_size": 100,
+            "minscore": 0.4,
+            "minsimilarity": 0.4,
+            "name": "IdenticalTopologicalScaffold"
+        },
+        "inception": {
+            "memory_size": 100,
+            "sample_size": 10,
+            "smiles": []
+        },
+        "reinforcement_learning": {
+            "agent": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/chembl_31_RL/models/chembl_train.prior",
+            "batch_size": 8,
+            "learning_rate": 0.0001,
+            "margin_threshold": 50,
+            "n_steps": 3000,
+            "prior": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/chembl_31_RL/models/chembl_train.prior",
+            "sigma": 128
+        },
+        "scoring_function": {
+            "name": "custom_product",
+            "parallel": false,
+            "parameters": [
+                {
+                    "component_type": "qed_score",
+                    "name": "QED Score",
+                    "weight": 1
+                },
+                {
+                    "component_type": "num_hbd_lipinski",
+                    "name": "HB-donors (Lipinski)",
+                    "specific_parameters": {
+                        "transformation": {
+                            "high": 3,
+                            "low": 0,
+                            "transformation_type": "step"
+                        }
+                    },
+                    "weight": 1
+                },
+                {
+                    "component_type": "dockstream",
+                    "name": "DockStream-RET",
+                    "specific_parameters": {
+                        "configuration_path": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/chembl_31_RL/RL_HYBRID_7JU6_3000epochs_REV/RET_docking.json",
+                        "docker_script_path": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/DockStream/docker.py",
+                        "environment_path": "/home/medicina/anaconda3/envs/DockStream/bin/python",
+                        "transformation": {
+                            "high": -8,
+                            "k": 0.25,
+                            "low": -14,
+                            "transformation_type": "reverse_sigmoid"
+                        }
+                    },
+                    "weight": 1
+                },
+                {
+                    "component_type": "custom_alerts",
+                    "name": "Custom alerts",
+                    "specific_parameters": {
+                        "smiles": [
+                            "[*;r8]",
+                            "[*;r9]",
+                            "[*;r10]",
+                            "[*;r11]",
+                            "[*;r12]",
+                            "[*;r13]",
+                            "[*;r14]",
+                            "[*;r15]",
+                            "[*;r16]",
+                            "[*;r17]",
+                            "[#8][#8]",
+                            "[#6;+]",
+                            "[#16][#16]",
+                            "[#7;!n][S;!$(S(=O)=O)]",
+                            "[#7;!n][#7;!n]",
+                            "[#8]=[#16]=[#8]",
+                            "C(=[O,S])[O,S]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#16;!s]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#7;!n]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#8;!o]",
+                            "[#8;!o][C;!$(C(=[O,N])[N,O])][#16;!s]",
+                            "[#8;!o][C;!$(C(=[O,N])[N,O])][#8;!o]",
+                            "[#16;!s][C;!$(C(=[O,N])[N,O])][#16;!s]"
+                        ]
+                    },
+                    "weight": 1
+                }
+            ]
+        }
+    },
+    "run_type": "reinforcement_learning",
+    "version": 3
+}
