@@ -1,0 +1,2672 @@
+{
+    "logging": {
+        "job_id": "demo",
+        "job_name": "RL DockStream + MultiTask + Phenotype",
+        "logging_frequency": 100,
+        "logging_path": "/home/medicina/Downloads/dockstream/RL_7JU6_With_Inception_1000epochs/progress-dockstream.log",
+        "recipient": "local",
+        "result_folder": "/home/medicina/Downloads/dockstream/RL_7JU6_With_Inception_1000epochs/results-dockstream",
+        "sender": "http://0.0.0.1"
+    },
+    "model_type": "default",
+    "parameters": {
+        "diversity_filter": {
+            "bucket_size": 100,
+            "minscore": 0.4,
+            "minsimilarity": 0.4,
+            "name": "IdenticalTopologicalScaffold"
+        },
+        "inception": {
+            "memory_size": 100,
+            "sample_size": 10,
+            "smiles": [
+                "c1cccc(c1n2C34C)c5c2c6c(c7c5CN=C7O)c8c(cccc8)n6C(O3)CC(NC)C4OC",
+                "CC(C)(C)c(c1)ccc(c12)[nH]c(n2)-c3n[nH]c(c34)cccc4",
+                "FC(F)(F)c1cc(c(F)cc1)N=C(O)Nc2ccc(cc2)-c3csc(c34)ncnc4N",
+                "Cc1cc([nH][nH]1)=Nc2c(F)cc(C#N)c([nH]2)=NC(C)c3ccc(F)cn3",
+                "Cn1cc(cn1)-c2nc(c(F)c(c23)CN=C3O)NC4C(N)CCCC4",
+                "c1c[nH]nc1C#CC(N(C2(C)CC2)c(c34)ncnc4N)C3C(=O)Nc5ccc(cc5)COC",
+                "Nc1ncnc(c12)n(C(C)C)cc2-c(c3)[nH]c(c34)nccc4",
+                "c1ccccc1C2CC2C(O)=NC(C3)=Cc4ncc(c4c35)cnnc5O",
+                "CN(C)C=C(C1=O)C=CN(C12)C(=O)CC(=N2)C",
+                "N#Cc1cnn(c12)cc(OCC)cc2-c3ccc(nc3)N(CC4)CCC4(C)S(=O)(=O)CC(C)C"
+            ]
+        },
+        "reinforcement_learning": {
+            "agent": "/home/medicina/Downloads/dockstream/chembl_train.prior",
+            "batch_size": 8,
+            "learning_rate": 0.0001,
+            "margin_threshold": 50,
+            "n_steps": 1000,
+            "prior": "/home/medicina/Downloads/dockstream/chembl_train.prior",
+            "sigma": 128
+        },
+        "scoring_function": {
+            "name": "custom_sum",
+            "parallel": false,
+            "parameters": [
+                {
+                    "component_type": "num_hbd_lipinski",
+                    "name": "HB-donors (Lipinski)",
+                    "specific_parameters": {
+                        "transformation": {
+                            "high": 3,
+                            "low": 1,
+                            "transformation_type": "step"
+                        }
+                    },
+                    "weight": 1
+                },
+                {
+                    "component_type": "num_hba_lipinski",
+                    "name": "HB-acceptors (Lipinski)",
+                    "specific_parameters": {
+                        "transformation": {
+                            "high": 12,
+                            "low": 8,
+                            "transformation_type": "step"
+                        }
+                    },
+                    "weight": 1
+                },
+                {
+                    "component_type": "slogp",
+                    "name": "SLogP",
+                    "specific_parameters": {
+                        "transformation": {
+                            "high": 5.6,
+                            "low": 3.5,
+                            "transformation_type": "step"
+                        }
+                    },
+                    "weight": 1
+                },
+                {
+                    "component_type": "dockstream",
+                    "name": "DockStream-RET",
+                    "specific_parameters": {
+                        "configuration_path": "/home/medicina/Downloads/dockstream/RET_docking.json",
+                        "docker_script_path": "/media/medicina/SSD_DRIVE/REINVENT_PROJECT/DockStream/docker.py",
+                        "environment_path": "/home/medicina/anaconda3/envs/DockStream_env/bin/python",
+                        "transformation": {
+                            "high": -8,
+                            "k": 0.25,
+                            "low": -14,
+                            "transformation_type": "reverse_sigmoid"
+                        }
+                    },
+                    "weight": 1
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "RET",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/RET_MUTANT_final_model_Hyper.pkl",
+                        "radius": 3,
+                        "scikit": "regression",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 9,
+                            "k": 0.25,
+                            "low": 4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 3
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Cyclin-dependent_kinase_2_G1_S-specific_cyclin-E1",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Cyclin-dependent kinase 2_G1_S-specific cyclin-E1/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Dual_specificity_tyrosine-phosphorylation-regulated_kinase_1A",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Dual specificity tyrosine-phosphorylation-regulated kinase 1A/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Glycogen_synthase_kinase-3_beta",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Glycogen synthase kinase-3 beta/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Interleukin-1_receptor-associated_kinase_4",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Interleukin-1 receptor-associated kinase 4/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Leucine-rich_repeat_serine_threonine-protein_kinase_2",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Leucine-rich repeat serine_threonine-protein kinase 2/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Mitogen-activated_protein_kinase_1",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Mitogen-activated protein kinase 1/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Mitogen-activated_protein_kinase_14",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Mitogen-activated protein kinase 14/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Mitogen-activated_protein_kinase_kinase_kinase_kinase_1",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Mitogen-activated protein kinase kinase kinase kinase 1/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Non-receptor_tyrosine-protein_kinase_TYK2",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Non-receptor tyrosine-protein kinase TYK2/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Phosphatidylinositol_45-bisphosphate_3-kinase_catalytic_subunit_alpha_isoform",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit alpha isoform/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Phosphatidylinositol_45-bisphosphate_3-kinase_catalytic_subunit_delta_isoform",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit delta isoform/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Phosphatidylinositol_45-bisphosphate_3-kinase_catalytic_subunit_gamma_isoform",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit gamma isoform/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_RAF_proto-oncogene_serine_threonine-protein_kinase",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_RAF proto-oncogene serine_threonine-protein kinase/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Rho-associated_protein_kinase_2",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Rho-associated protein kinase 2/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Serine_threonine-protein_kinase_ATR",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Serine_threonine-protein kinase ATR/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Serine_threonine-protein_kinase_B-raf",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Serine_threonine-protein kinase B-raf/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Serine_threonine-protein_kinase_mTOR",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Serine_threonine-protein kinase mTOR/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Tyrosine-protein_kinase_ABL1",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Tyrosine-protein kinase ABL1/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Tyrosine-protein_kinase_BTK",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Tyrosine-protein kinase BTK/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Tyrosine-protein_kinase_JAK1",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Tyrosine-protein kinase JAK1/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Tyrosine-protein_kinase_JAK2",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Tyrosine-protein kinase JAK2/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Tyrosine-protein_kinase_JAK3",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Tyrosine-protein kinase JAK3/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "OffTarget_Kinase_Tyrosine-protein_kinase_SYK",
+                    "specific_parameters": {
+                        "descriptor_type": "ecfp_counts",
+                        "model_path": "/home/medicina/Downloads/dockstream/saved_model_19Nov/ecfp_counts_RandomForest_random_Tyrosine-protein kinase SYK/model.pkl",
+                        "radius": 2,
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.3,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": -0.217
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_A427",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_A427.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_A549",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_A549.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_ABC_1",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_ABC-1.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_BEN",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_BEN.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_CAL_12T",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_CAL-12T.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_Calu_3",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_Calu-3.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_Calu_6",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_Calu-6.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_ChaGo_K_1",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_ChaGo-K-1.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_COR_L105",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_COR-L105.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_COR_L23",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_COR-L23.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_EBC_1",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_EBC-1.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_EKVX",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_EKVX.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_EMC_BAC_1",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_EMC-BAC-1.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_EMC_BAC_2",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_EMC-BAC-2.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_EPLC_272H",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_EPLC-272H.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_H3255",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_H3255.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_HARA",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_HARA.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_HCC_15",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_HCC-15.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_HCC_366",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_HCC-366.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_HCC_44",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_HCC-44.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_HCC_78",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_HCC-78.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_HCC_827",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_HCC-827.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_HOP_62",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_HOP-62.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_HOP_92",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_HOP-92.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_IA_LM",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_IA-LM.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_KNS_62",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_KNS-62.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_LC_1_sq",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_LC-1-sq.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_LC_2_ad",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_LC-2-ad.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_LCLC_103H",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_LCLC-103H.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_LCLC_97TM1",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_LCLC-97TM1.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_LK_2",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_LK-2.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_LOU_NH91",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_LOU-NH91.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_LU_65",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_LU-65.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_LU_99A",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_LU-99A.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_LXF_289",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_LXF-289.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1155",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1155.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1299",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1299.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1355",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1355.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1435",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1435.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1437",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1437.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1563",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1563.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1568",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1568.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1573",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1573.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1581",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1581.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1623",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1623.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1648",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1648.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1650",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1650.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1651",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1651.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1666",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1666.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1693",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1693.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1703",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1703.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1734",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1734.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1755",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1755.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1770",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1770.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1781",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1781.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1792",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1792.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1793",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1793.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1838",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1838.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1869",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1869.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1915",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1915.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1944",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1944.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1975",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1975.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H1993",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H1993.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2009",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2009.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2023",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2023.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2030",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2030.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2085",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2085.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2087",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2087.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2110",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2110.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2122",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2122.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2135",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2135.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2170",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2170.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2172",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2172.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2228",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2228.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H226",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H226.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2291",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2291.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2342",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2342.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2347",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2347.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H23",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H23.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2405",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2405.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H2444",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H2444.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H292",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H292.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H3122",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H3122.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H322M",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H322M.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H358",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H358.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H441",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H441.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H460",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H460.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H520",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H520.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H522",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H522.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H596",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H596.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H647",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H647.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H650",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H650.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H661",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H661.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H720",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H720.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H727",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H727.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H810",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H810.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H835",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H835.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_NCI_H838",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_NCI-H838.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_PC_14",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_PC-14.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_PC_3__JPC_3_",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_PC-3__JPC-3_.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_RERF_LC_KJ",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_RERF-LC-KJ.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_RERF_LC_MS",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_RERF-LC-MS.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_RERF_LC_Sq1",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_RERF-LC-Sq1.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_SK_LU_1",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_SK-LU-1.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_SK_MES_1",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_SK-MES-1.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_SW1573",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_SW1573.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_UMC_11",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_UMC-11.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "predictive_property",
+                    "name": "NSCLC_Cell_VMRC_LCD",
+                    "specific_parameters": {
+                        "descriptor_type": "avalon",
+                        "model_path": "/home/medicina/Downloads/dockstream/results_zscore_individual/individual_models/avalon_RandomForest_random_VMRC-LCD.pkl",
+                        "scikit": "classification",
+                        "size": 2048,
+                        "transformation": {
+                            "high": 0.7,
+                            "k": 0.25,
+                            "low": 0.4,
+                            "transformation_type": "sigmoid"
+                        },
+                        "use_counts": true,
+                        "use_features": true
+                    },
+                    "weight": 0.065
+                },
+                {
+                    "component_type": "custom_alerts",
+                    "name": "Custom alerts",
+                    "specific_parameters": {
+                        "smiles": [
+                            "[*;r8]",
+                            "[*;r9]",
+                            "[*;r10]",
+                            "[*;r11]",
+                            "[*;r12]",
+                            "[*;r13]",
+                            "[*;r14]",
+                            "[*;r15]",
+                            "[*;r16]",
+                            "[*;r17]",
+                            "[#8][#8]",
+                            "[#6;+]",
+                            "[#16][#16]",
+                            "[#7;!n][S;!$(S(=O)=O)]",
+                            "[#7;!n][#7;!n]",
+                            "[#8]=[#16]=[#8]",
+                            "C(=[O,S])[O,S]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#16;!s]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#7;!n]",
+                            "[#7;!n][C;!$(C(=[O,N])[N,O])][#8;!o]",
+                            "[#8;!o][C;!$(C(=[O,N])[N,O])][#16;!s]",
+                            "[#8;!o][C;!$(C(=[O,N])[N,O])][#8;!o]",
+                            "[#16;!s][C;!$(C(=[O,N])[N,O])][#16;!s]"
+                        ],
+                        "transformation": {
+                            "transformation_type": "no_transformation"
+                        }
+                    },
+                    "weight": 1
+                }
+            ]
+        }
+    },
+    "run_type": "reinforcement_learning",
+    "version": 3
+}
