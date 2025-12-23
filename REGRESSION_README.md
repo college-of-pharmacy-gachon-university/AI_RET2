@@ -267,7 +267,6 @@ Comprehensive metrics are calculated for each model:
 | **RMSE** | Root mean squared error | √(Σ(y_true - y_pred)² / n) | Lower is better; same units as target |
 | **MAE** | Mean absolute error | Σ\|y_true - y_pred\| / n | Lower is better; robust to outliers |
 | **Pearson r** | Linear correlation | Covariance / (σ_x × σ_y) | -1 to 1; measures linear relationship |
-| **Spearman ρ** | Rank correlation | Pearson on ranks | -1 to 1; measures monotonic relationship |
 
 ### Cross-Validation
 
