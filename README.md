@@ -80,33 +80,34 @@ See individual model directories for specific requirements.
 
 ```
 AI_RET2
-├── README.md                                    # This file
-├── CLASSIFICATION_README.md                     # Classification models documentation
-├── REGRESSION_README.md                         # Regression models documentation
+├── README.md                                                         # This file
+├── CLASSIFICATION_README.md                                          # Classification models documentation
+├── REGRESSION_README.md                                              # Regression models documentation
 │
-├── MULTI_KINASE_CLASSIFICATION_CODES_DATA/     # Multi-kinase selectivity classification
-│   ├── multitask_classifier_with_default_parameters_SINGLE_MODEL.py
-│   └── saved_model_19Nov/                       # Trained models
+├── MULTI_KINASE_CLASSIFICATION_CODES_DATA/                           # Multi-kinase selectivity classification
+│   ├── multitask_classifier_with_default_parameters_SINGLE_MODEL.py  # code for training/validation/testing
+│   ├── kinase_ml_output/                                             # Multi-Kinase data for training/validation/testing
+│   └── saved_model_19Nov.zip/                                        # Trained models
 │
-├── PHENOTYPES_CLASSIFICATION_CODES_DATA/        # Phenotypic classification
-│   ├── multitask_classifier_zscore_INDIVIDUAL_FILES.py
-│   ├── GDSC1_GDSC2_Combined_Dataset_With_SMILES.csv
-│   └── results_zscore_individual/               # Model outputs
+├── PHENOTYPES_CLASSIFICATION_CODES_DATA/                             # Phenotypic classification
+│   ├── multitask_classifier_zscore_INDIVIDUAL_FILES.py               # code for training/validation/testing
+│   ├── GDSC1_GDSC2_Combined_Dataset_With_SMILES.csv                  # Phenotype data for training/validation/testing
+│   └── results_zscore_individual.zip/                                # Model outputs
 │
-├── RET_MUT_REGRESSION_CODES_DATA/               # RET G810R mutant regression
-│   ├── train_model_randomized_MUT.py
-│   ├── RET_Mutant_Selected_Dataset_With_Additional_Information.csv
-│   └── RET_MUTANT_final_model_Hyper.pkl        # Best trained model
+├── RET_MUT_REGRESSION_CODES_DATA/                                    # RET G810R mutant regression
+│   ├── train_model_randomized_MUT.py                                 # code for training/validation/testing
+│   ├── RET_Mutant_Selected_Dataset_With_Additional_Information.csv   # RET_Mut data for training/validation/testing
+│   └── RET_MUTANT_final_model_Hyper.pkl                              # Best trained model
 │
-├── SINGLE_OBJECTIVE_REINVENT_JSON/              # Single-objective RL configs
+├── SINGLE_OBJECTIVE_REINVENT_JSON/                                   # Single-objective RL configs
 │   ├── JOB01/ through JOB05/
 │   └── INCEPTIONS_USED_IN_SINGLE_OBJECTIVE.xlsx
 │
-├── MULTI_OBJECTIVE_REINVENT_JSON/              # Single-objective RL configs
+├── MULTI_OBJECTIVE_REINVENT_JSON/                                   # Multi-objective RL configs
 │   ├── JOB01/ through JOB05/
 │   └── INCEPTIONS_USED_IN_SINGLE_OBJECTIVE.xlsx
 │
-├── KNIME_WORKFLOW/              # KNIME Workflow
+├── KNIME_WORKFLOW/                                                  # KNIME Workflow
     └──  README.md
 ```
 
