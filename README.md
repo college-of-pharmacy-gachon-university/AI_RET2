@@ -113,24 +113,11 @@ AI_RET2
 
 ---
 
-## Dataset Collection
+## Dataset
 
-To facilitate RET-specific data curation, we provide a pre-built KNIME workflow:
+To facilitate RET-MUT Model development, we provide a dataset:
 
-**File:** `KNIME_WORKFLOW/RET_DATASET.knwf`
-
-### How to Use the KNIME Workflow
-
-1. Launch the KNIME Analytics Platform
-2. Navigate to: **File → Import KNIME Workflow**
-3. Select and import the provided `.knwf` file
-4. Execute the workflow within the KNIME workspace to collect and preprocess the RET-specific dataset
-
-The workflow automates:
-- Data retrieval from public databases
-- Structure standardization
-- Activity data curation
-- Quality filtering
+**File:** `RET_MUT_REGRESSION_CODES_DATA/RET_Mutant_Selected_Dataset_With_Additional_Information.csv`
 
 ---
 
