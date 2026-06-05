@@ -20,6 +20,7 @@ Gachon Institute of Pharmaceutical Science and Department of Pharmacy, College o
 - [Repository Structure](#repository-structure)
 - [Dataset Collection](#dataset-collection)
 - [Machine Learning Models](#machine-learning-models)
+- [Applicability Domain and Hypothesis Analysis](#applicability-domain-and-hypothesis-analysis)
 - [Molecular Generation using Reinforcement Learning](#molecular-generation-using-reinforcement-learning)
 - [Post-Processing and Analysis](#post-processing-and-analysis)
 - [Contact Information](#contact-information)
@@ -31,8 +32,9 @@ Gachon Institute of Pharmaceutical Science and Department of Pharmacy, College o
 This project implements a comprehensive workflow for RET-specific molecular design using:
 
 1. **Machine Learning Models**: Classification and regression models for predicting kinase selectivity, phenotypic responses, and RET mutant activity
-2. **Reinforcement Learning**: REINVENT v3.2-based molecular generation with single and multi-objective optimization
-3. **Cheminformatics Pipeline**: KNIME workflows for data curation and post-processing
+2. **Applicability Domain Analysis**: CLASS-LAG and Consensus AD methods for NSCLC phenotype models, and root-cause diagnostics (H1–H4) explaining model limitations
+3. **Reinforcement Learning**: REINVENT v3.2-based molecular generation with single and multi-objective optimization
+4. **Cheminformatics Pipeline**: KNIME workflows for data curation and post-processing
 
 The workflow integrates predictive models with generative AI to design novel RET inhibitors with improved selectivity and potency profiles.
 
@@ -40,78 +42,107 @@ The workflow integrates predictive models with generative AI to design novel RET
 
 ## Requirements and Installation
 
-This project requires several external tools and software modules. Please ensure the following are installed on your system:
+### 1. Clone the Repository
 
-### Required Software
+```bash
+git clone <repository-url>
+cd AI_RET2
+```
 
-1. **REINVENT v3.2**  
+### 2. Create the Conda Environment
+
+An `environment.yml` file is provided at the root of the repository. It installs all Python dependencies needed to run the machine learning pipelines and AD analyses.
+
+```bash
+conda env create -f environment.yml
+conda activate ai_ret
+```
+
+This installs: Python 3.9, RDKit, scikit-learn, numpy, pandas, scipy, matplotlib, seaborn, joblib, tqdm, umap-learn, xgboost.
+
+To update an existing environment:
+
+```bash
+conda env update -f environment.yml --prune
+```
+
+### 3. Required External Software
+
+1. **REINVENT v3.2**
    - Reinforcement learning framework for molecular generation
    - Installation: Follow instructions at [REINVENT GitHub](https://github.com/MolecularAI/Reinvent)
 
-2. **KNIME Analytics Platform**  
+2. **KNIME Analytics Platform**
    - For data curation and post-processing workflows
    - Download from [KNIME website](https://www.knime.com/)
 
-3. **Schrödinger Software Suite (2020-4 or later)**  
+3. **Schrödinger Software Suite (2020-4 or later)**
    - Requires a valid license
    - Used for molecular modeling and docking studies
 
-4. **OpenEye Scientific Software**  
+4. **OpenEye Scientific Software**
    - Requires a valid license
    - Used for molecular descriptor generation
 
-### Python Dependencies
+### 4. Verify Installation
 
-The machine learning models require:
-- Python 3.7+
-- RDKit
-- scikit-learn
-- pandas, numpy
-- scipy
-- UMAP (optional, for clustering-based splits)
-
-See individual model directories for specific requirements.
+```bash
+conda activate ai_ret
+python -c "from rdkit import Chem; import sklearn, umap; print('All dependencies OK')"
+```
 
 ---
 
 ## Repository Structure
 
 ```
-AI_RET2
-├── README.md                                                         # This file
-├── CLASSIFICATION_README.md                                          # Classification models documentation
-├── REGRESSION_README.md                                              # Regression models documentation
+AI_RET2/
+├── README.md                                      # This file
+├── CLASSIFICATION_README.md                       # Classification models documentation
+├── REGRESSION_README.md                           # Regression models documentation
 │
-├── MULTI_KINASE_CLASSIFICATION_CODES_DATA/                           # Multi-kinase selectivity classification
-│   ├── multitask_classifier_with_default_parameters_SINGLE_MODEL.py  # code for training/validation/testing
-│   ├── kinase_ml_output/                                             # Multi-Kinase data for training/validation/testing
-│   └── saved_model_19Nov.zip/                                        # Trained models
+├── MULTI_KINASE_CLASSIFICATION_CODES_DATA/                           # 23-target kinase multi-task classification
+│   ├── raw_input/
+│   │   └── KINASE_Dataset_With_IC50_188217.csv
+│   ├── input/                                     # Cleaned input matrices (94,213 compounds × 23 targets)
+│   ├── results/                                   # Authoritative classification results
+│   └── code/                                      # Transformation and training scripts
 │
-├── PHENOTYPES_CLASSIFICATION_CODES_DATA/                             # Phenotypic classification
-│   ├── multitask_classifier_zscore_INDIVIDUAL_FILES.py               # code for training/validation/testing
-│   ├── GDSC1_GDSC2_Combined_Dataset_With_SMILES.csv                  # Phenotype data for training/validation/testing
-│   └── results_zscore_individual.zip/                                # Model outputs
+├── PHENOTYPES_CLASSIFICATION_CODES_DATA/                            # NSCLC drug response phenotype modelling (GDSC)
+│   ├── input/
+│   │   ├── z0_threshold/                          # Z=0 (primary analysis; 37.6% sensitive)
+│   │   ├── z0.5_threshold/                        # Z=−0.5 (19.6% sensitive)
+│   │   ├── z0.75_threshold/                       # Z=−0.75 (12.9% sensitive)
+│   │   └── z1.0_threshold/                        # Z=−1.0 (~7.8% sensitive)
+│   ├── results/
+│   │   ├── z0_unweighted/                         # Primary NSCLC result (mean AUC=0.550)
+│   │   ├── z0_weighted/
+│   │   ├── z0.5_weighted/
+│   │   ├── z0.75_weighted/
+│   │   └── z1.0_weighted/
+│   └── code/                                      # Transformation and training scripts
 │
-├── RET_MUT_REGRESSION_CODES_DATA/                                    # RET G810R mutant regression
-│   ├── train_model_randomized_MUT.py                                 # code for training/validation/testing
-│   ├── RET_Mutant_Selected_Dataset_With_Additional_Information.csv   # RET_Mut data for training/validation/testing
-│   └── RET_MUTANT_final_model_Hyper.pkl                              # Best trained model
+├── PHENOTYPE_APPLICABILITY_DOMAIN/                # AD analysis + H1–H4 root-cause diagnostics
+│   ├── 03_APPLICABILITY_DOMAIN/                   # CLASS-LAG and Consensus AD
+│   │   ├── code/
+│   │   └── results/
+│   └── 04_HYPOTHESIS_ANALYSIS_H1_H4/             # H1–H4 NSCLC failure analysis
+│       ├── code/
+│       └── results/
 │
-├── SINGLE_OBJECTIVE_REINVENT_JSON/                                   # Single-objective RL configs
-│   ├── JOB01/ through JOB05/
-│   └── INCEPTIONS_USED_IN_SINGLE_OBJECTIVE.xlsx
+├── RET_MUT_REGRESSION_CODES_DATA/                 # RET G810R mutant regression
+│   ├── train_model_randomized_MUT.py
+│   ├── RET_Mutant_Selected_Dataset_With_Additional_Information.csv
+│   └── RET_MUTANT_final_model_Hyper.pkl
 │
-├── MULTI_OBJECTIVE_REINVENT_JSON/                                   # Multi-objective RL configs
-│   ├── JOB01/ through JOB05/
-│   └── INCEPTIONS_USED_IN_SINGLE_OBJECTIVE.xlsx
-│
-├── KNIME_WORKFLOW/                                                  # KNIME Workflow
-    └──  README.md
+├── SINGLE_OBJECTIVE_REINVENT_JSON/                # Single-objective RL configs (JOB01–JOB05)
+├── MULTI_OBJECTIVE_REINVENT_JSON/                 # Multi-objective RL configs (JOB01–JOB05)
+└── KNIME_WORKFLOW/                                # KNIME post-processing workflows
 ```
 
 ---
 
-## Dataset
+## Dataset Collection
 
 To facilitate RET-MUT Model development, we provide a dataset:
 
@@ -123,35 +154,129 @@ To facilitate RET-MUT Model development, we provide a dataset:
 
 This project includes three types of machine learning models:
 
-### 1. Multi-Kinase Selectivity Classification
+### 1. Multi-Kinase Selectivity Classification (`MULTI_KINASE_CLASSIFICATION_CODES_DATA/`)
 
-Predicts selectivity across multiple kinase targets using multi-task learning.
+Predicts selectivity across 23 kinase targets using multi-task learning.
 
-- **Algorithms:** RandomForest, SVM, KNeighbors, ExtraTrees, GradientBoosting, LogisticRegression, GaussianNB
-- **Features:** ECFP_Counts (Extended Connectivity Fingerprints with count vectors), ECFP, MACCS, Avalon fingerprints
-- **Split Types:** Random, cross_validation, scaffold, butina, umap_clustering split
+- **Input:** 94,213 unique compounds (188,217 raw ChEMBL bioactivity rows); 23 targets
+- **Algorithms:** RandomForest, GradientBoosting, LogisticRegression, SVM, KNN, NaiveBayes, MLP
+- **Features:** ECFP, ECFP_COUNT, MACCS, Avalon fingerprints
+- **Split types:** Random, Scaffold, Butina, UMAP-cluster
+- **Key result:** random split mean AUC = 0.8927
+
+**Run:**
+
+```bash
+conda activate ai_ret
+
+# Data transformation:
+python MULTI_KINASE_CLASSIFICATION_CODES_DATA/code/transform_kinase_multitask.py \
+    MULTI_KINASE_CLASSIFICATION_CODES_DATA/raw_input/KINASE_Dataset_With_IC50_188217.csv \
+    --output_prefix kinase_multitask_14May_V15_188217_Original \
+    --dedup_mode smiles
+
+# Multi-task classifier training:
+python MULTI_KINASE_CLASSIFICATION_CODES_DATA/code/multitask_classifier_with_default_parameters.py --max_workers 32
+
+# Youden threshold analysis:
+python MULTI_KINASE_CLASSIFICATION_CODES_DATA/code/run_youden_analysis.py
+```
 
 📖 **See [CLASSIFICATION_README.md](CLASSIFICATION_README.md) for detailed documentation**
 
-### 2. Phenotypic Response Classification
+---
 
-Predicts drug sensitivity across multiple cell lines from GDSC1/GDSC2 datasets.
+### 2. NSCLC Phenotypic Response Classification (`PHENOTYPES_CLASSIFICATION_CODES_DATA/`)
 
-- **Algorithms:** RandomForest, SVM, LogisticRegression, XGBoost
-- **Features:** ECFP, MACCS, Avalon fingerprints
-- **Split Types:** Random, scaffold, butina, umap_clustering split
+Predicts drug sensitivity across 108 NSCLC cell lines from GDSC1/GDSC2 datasets.
+
+- **Input:** 429 unique NSCLC drugs × 108 cell lines (41,352 drug–cell-line pairs)
+- **Algorithms:** RandomForest, SVM, ExtraTrees, LogisticRegression, KNeighbors, GradientBoosting, GaussianNB
+- **Features:** ECFP, ECFP_COUNT, MACCS, Avalon fingerprints
+- **Split types:** Random, Scaffold, Butina, UMAP-cluster
+- **Key result:** Primary (Z=0, unweighted) mean AUC = 0.550 — near-random; see `PHENOTYPE_APPLICABILITY_DOMAIN/` for root-cause analysis
+
+**Run (Z=0, primary analysis):**
+
+```bash
+conda activate ai_ret
+
+# Data transformation:
+python PHENOTYPES_CLASSIFICATION_CODES_DATA/code/transform_for_multitask_zscore.py \
+    GDSC1_GDSC2_Combined_Dataset_With_SMILES.csv \
+    -o gdsc_multitask_threshold_zeo --threshold 0.0
+
+# Unweighted training (primary result):
+python PHENOTYPES_CLASSIFICATION_CODES_DATA/code/multitask_classifier_unweighted.py \
+    --data_folder gdsc_multitask_threshold_zeo_output \
+    --output_prefix gdsc_multitask_threshold_zeo \
+    --z_threshold 0.0 --no_save_models \
+    --results_path PHENOTYPES_CLASSIFICATION_CODES_DATA/results/z0_unweighted
+
+# Weighted training:
+python PHENOTYPES_CLASSIFICATION_CODES_DATA/code/multitask_classifier_weighted.py \
+    --data_folder gdsc_multitask_threshold_zeo_output \
+    --output_prefix gdsc_multitask_threshold_zeo \
+    --z_threshold 0.0 --imbalance_strategy sample_weight \
+    --no_save_models --max_workers 32 \
+    --results_path PHENOTYPES_CLASSIFICATION_CODES_DATA/results/z0_weighted
+```
 
 📖 **See [CLASSIFICATION_README.md](CLASSIFICATION_README.md) for detailed documentation**
 
-### 3. RET G810R Mutant Activity Regression
+---
+
+### 3. RET G810R Mutant Activity Regression (`RET_MUT_REGRESSION_CODES_DATA/`)
 
 Predicts pIC50 values for the RET G810R mutant using comprehensive model evaluation.
 
 - **Algorithms:** RandomForest, ExtraTrees, ElasticNet
 - **Features:** ECFP, ECFP_Counts, Avalon, MACCS
-- **Split Types:** Random (multiple seeds), Scaffold, Butina, UMAP_Clustering
+- **Split types:** Random (multiple seeds), Scaffold, Butina, UMAP_Clustering
 
 📖 **See [REGRESSION_README.md](REGRESSION_README.md) for detailed documentation**
+
+---
+
+## Applicability Domain and Hypothesis Analysis
+
+This section contains two related analyses that characterise the reliability of the NSCLC phenotype models and diagnose their near-random performance.
+
+### 03_APPLICABILITY_DOMAIN — CLASS-LAG and Consensus AD
+
+Evaluates whether NSCLC test compounds fall within the applicability domain of the trained models using two complementary methods:
+
+- **CLASS-LAG AD**: Lazy-learning AD — compares a test compound to its nearest training neighbours in chemical space and checks label consistency.
+- **Consensus AD**: Combines Tanimoto structural similarity with response concordance to define the AD boundary.
+
+Analyses are performed across all four Z-score thresholds (Z=0, −0.5, −0.75, −1.0) and both weighting schemes (weighted, unweighted).
+
+**Run:**
+
+```bash
+conda activate ai_ret
+python PHENOTYPE_APPLICABILITY_DOMAIN/03_APPLICABILITY_DOMAIN/code/run_all_AD.py
+```
+
+### 04_HYPOTHESIS_ANALYSIS_H1_H4 — Root-Cause Analysis
+
+Tests four hypotheses to explain the near-random NSCLC AUC (≈ 0.550):
+
+| Hypothesis | Conclusion |
+|---|---|
+| H1 — Wrong algorithm | All algorithms fail similarly; not the cause. |
+| H2 — Data quality / class imbalance | Imbalance is moderate; not the primary cause. |
+| H3 — Threshold / label noise | Poor performance across all Z thresholds; not the cause. |
+| H4 — Feature insufficiency | 2D fingerprints cannot encode cell-line-specific context; **primary cause.** |
+
+**Run:**
+
+```bash
+conda activate ai_ret
+python PHENOTYPE_APPLICABILITY_DOMAIN/04_HYPOTHESIS_ANALYSIS_H1_H4/code/analyze_nsclc_failure.py --tag z0
+```
+
+📖 **See [PHENOTYPE_APPLICABILITY_DOMAIN/README.md](PHENOTYPE_APPLICABILITY_DOMAIN/README.md) for detailed documentation**
 
 ---
 
@@ -163,14 +288,14 @@ This repository includes multiple JSON configuration files for executing reinfor
 
 Located in `SINGLE_OBJECTIVE_REINVENT_JSON/`
 
-- **JOB01-JOB05**: Different optimization strategies
+- **JOB01–JOB05**: Different optimization strategies
 - Each job focuses on a single objective (e.g., RET potency, selectivity)
 
 ### Multi-Objective Optimization
 
 Located in `MULTI_OBJECTIVE_REINVENT_JSON/`
 
-- **JOB01-JOB05**: Simultaneous optimization of multiple objectives
+- **JOB01–JOB05**: Simultaneous optimization of multiple objectives
 - Balances potency, selectivity, and drug-like properties
 
 ### Running REINVENT Jobs
@@ -187,7 +312,7 @@ Located in `MULTI_OBJECTIVE_REINVENT_JSON/`
    python input.py RL_config.json
    ```
 
-⚠️ **Important:** Before running any job, update the file paths in the JSON configuration files for reading input and writing output.
+> **Important:** Before running any job, update the file paths in the JSON configuration files for reading input and writing output.
 
 ### Inception Files
 
@@ -199,7 +324,7 @@ Inception files containing known RET-specific ligands are included to guide the 
 
 Two comprehensive KNIME workflows are provided for post-processing generated molecules under Single-Objective and Multi-Objective optimization:
 
-**Files:** 
+**Files:**
 - `KNIME_WORKFLOW/SINGLE_OBJECTIVE_MULTI_STAGE_FILTER.knwf`
 - `KNIME_WORKFLOW/MULTI_OBJECTIVE_MULTI_STAGE_FILTER.knwf`
 
@@ -220,7 +345,6 @@ For any queries, please contact:
 - **Mi-Hyun Kim** (Principal Investigator): kmh0515@gachon.ac.kr
 - **Surendra Kumar**: surendramph@gmail.com
 
----
 ---
 
 ## Acknowledgments
