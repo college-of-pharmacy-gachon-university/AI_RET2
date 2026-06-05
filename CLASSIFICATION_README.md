@@ -1,6 +1,6 @@
 # Classification Models Documentation
 
-This document provides detailed technical specifications for the classification models used in the AI-RET project.
+Detailed technical specifications for the two classification pipelines in AI-RET.
 
 ---
 
@@ -8,280 +8,162 @@ This document provides detailed technical specifications for the classification 
 
 - [Overview](#overview)
 - [Multi-Kinase Selectivity Classification](#multi-kinase-selectivity-classification)
-- [Phenotypic Response Classification](#phenotypic-response-classification)
-- [Usage Instructions](#usage-instructions)
+- [NSCLC Phenotypic Response Classification](#nsclc-phenotypic-response-classification)
 - [Model Evaluation Metrics](#model-evaluation-metrics)
-- [Saved Models](#saved-models)
 
 ---
 
 ## Overview
 
-This project includes two classification tasks:
+Two classification tasks are implemented:
 
-1. **Multi-Kinase Selectivity Classification**: Multi-task learning for predicting activity across multiple kinase targets
-2. **Phenotypic Response Classification**: Predicting drug sensitivity across cancer cell lines from GDSC datasets
+1. **Multi-Kinase Selectivity Classification** — multi-task activity prediction across 23 kinase targets from ChEMBL
+2. **NSCLC Phenotypic Response Classification** — drug sensitivity prediction across 108 NSCLC cell lines from GDSC1/GDSC2
 
-Both models are designed to be compatible with REINVENT for use as scoring functions during molecular generation.
+Both tasks use the same four molecular fingerprints (Avalon, ECFP, ECFP_COUNT, MACCS), seven classifiers, and four train/test split strategies, producing a comprehensive benchmark across all combinations.
 
 ---
 
 ## Multi-Kinase Selectivity Classification
 
-### Purpose
+**Code:** `MULTI_KINASE_CLASSIFICATION_CODES_DATA/code/multitask_classifier_with_default_parameters.py`
 
-Predict whether a compound is active (based on pIC50 threshold) across multiple kinase targets simultaneously using a multi-task learning approach.
+### Specifications
 
-### Technical Specifications
+| Item | Details |
+|------|---------|
+| **Input** | 94,213 unique compounds × 23 kinase targets |
+| **Activity threshold** | Per-target Youden's J applied to pIC50 values |
+| **Fingerprints** | Avalon (2048 bits), ECFP (r=2, 2048 bits), ECFP_COUNT (r=2, 2048 bits), MACCS (167 bits) |
+| **Classifiers** | RandomForest, ExtraTrees, GradientBoosting, LogisticRegression, SVM, KNeighbors, GaussianNB |
+| **Split strategies** | Random, Scaffold (Murcko), Butina, UMAP-cluster (80/20) |
+| **Feature scaling** | MaxAbsScaler (preserves sparse matrix structure) |
+| **Probability threshold** | Fixed 0.5 for binary predictions |
 
-| Specification | Details |
-|--------------|---------|
-| **Algorithm** | RandomForest Classifier |
-| **Hyperparameters** | Default parameters (random_state=42) |
-| **Molecular Features** | ECFP_Counts (Extended Connectivity Fingerprints with count vectors) |
-| **Fingerprint Parameters** | Radius: 3, Size: 2048 bits, Use counts: True |
-| **Data Representation** | Sparse matrix (for memory efficiency) |
-| **Split Type** | Random split (80% train / 20% test) |
-| **Learning Paradigm** | Multi-task classification (single model for all targets) |
-| **Threshold Method** | Fixed 0.5 probability threshold |
-
-### Key Features
-
-- **ECFP_Counts Fingerprints**: Unlike binary ECFP, count fingerprints capture the frequency of substructural features, providing richer molecular representation
-- **Multi-task Learning**: A single RandomForest model predicts activity across all kinase targets simultaneously, learning shared representations
-- **Sparse Matrix Optimization**: Uses scipy sparse matrices to handle high-dimensional fingerprints efficiently
-- **Memory-Efficient Scaling**: MaxAbsScaler for sparse data preservation
-
-### Model Architecture
+### Pipeline
 
 ```
-Input: SMILES strings
-  ↓
-ECFP_Counts Generation (radius=3, 2048 bits)
-  ↓
-Sparse Matrix (n_samples × 2048)
-  ↓
-MaxAbsScaler (preserves sparsity)
-  ↓
-RandomForest Multi-task Classifier
-  ↓
-Output: Binary predictions for each kinase target
+Input SMILES
+  → Fingerprint generation (Avalon / ECFP / ECFP_COUNT / MACCS)
+  → MaxAbsScaler
+  → 7 classifiers × 4 split strategies
+  → Per-target AUC, F1, MCC, AUPRC reported
 ```
 
-### Evaluation Metrics
+### Run
 
-The model is evaluated using:
-- **AUC-ROC**: Area under the receiver operating characteristic curve
-- **F1 Score**: Harmonic mean of precision and recall
-- **Accuracy**: Overall classification accuracy
-- **Precision**: Positive predictive value
-- **Recall**: Sensitivity/True positive rate
-- **Specificity**: True negative rate
-- **MCC**: Matthews Correlation Coefficient
-- **Balanced Accuracy**: Average of recall obtained on each class
+```bash
+conda activate ai_ret
 
-### File Location
+# Data transformation (pIC50 matrix + per-target Youden thresholds):
+python MULTI_KINASE_CLASSIFICATION_CODES_DATA/code/transform_kinase_multitask.py \
+    MULTI_KINASE_CLASSIFICATION_CODES_DATA/raw_input/KINASE_Dataset_With_IC50_188217.csv \
+    --output_prefix kinase_multitask_14May_V15_188217_Original \
+    --dedup_mode smiles
 
-**Code:** `MULTI_KINASE_CLASSIFICATION_CODES_DATA/multitask_classifier_with_default_parameters_SINGLE_MODEL.py`
+# Training (all FP × classifier × split combinations):
+python MULTI_KINASE_CLASSIFICATION_CODES_DATA/code/multitask_classifier_with_default_parameters.py --max_workers 32
 
-**Saved Models:** `MULTI_KINASE_CLASSIFICATION_CODES_DATA/saved_model_19Nov/`
+# Youden threshold analysis:
+python MULTI_KINASE_CLASSIFICATION_CODES_DATA/code/run_youden_analysis.py
+```
 
 ---
 
-## Phenotypic Response Classification
+## NSCLC Phenotypic Response Classification
 
-### Purpose
+**Code:** `PHENOTYPES_CLASSIFICATION_CODES_DATA/code/`
 
-Predict drug sensitivity (z-score based binary classification) across multiple cancer cell lines using data from GDSC1 and GDSC2 (Genomics of Drug Sensitivity in Cancer) datasets.
+Three scripts share the same base class (`multitask_classifier_zscore.py`) and differ only in class-imbalance handling:
 
-### Technical Specifications
+| Script | Imbalance strategy |
+|--------|--------------------|
+| `multitask_classifier_unweighted.py` | None (baseline) |
+| `multitask_classifier_weighted.py` | SAURON-RF sample weights: w = N_res / N_sens for sensitive compounds |
 
-| Specification | Details |
-|--------------|---------|
-| **Algorithm** | RandomForest Classifier |
-| **Hyperparameters** | Optimized via RandomizedSearchCV |
-| **Molecular Features** | Avalon Fingerprints |
-| **Fingerprint Parameters** | Size: 2048 bits |
-| **Split Type** | Random split (80% train / 20% test) |
-| **Learning Paradigm** | Individual models per cell line (task) |
-| **Missing Value Handling** | Task-specific models handle missing data naturally |
+### Specifications
 
-### Hyperparameter Optimization
+| Item | Details |
+|------|---------|
+| **Input** | 429 NSCLC drugs × 108 cell lines (41,352 drug–cell-line pairs) |
+| **Sensitivity label** | Z-score threshold (Z=0, −0.5, −0.75, −1.0); compound is sensitive if z ≤ threshold |
+| **Fingerprints** | Avalon, ECFP, ECFP_COUNT, MACCS |
+| **Classifiers** | RandomForest, ExtraTrees, GradientBoosting, LogisticRegression, SVM, KNeighbors, GaussianNB |
+| **Split strategies** | Random, Scaffold (Murcko), Butina, UMAP-cluster (80/20) |
+| **Feature scaling** | StandardScaler |
+| **Probability threshold** | Youden's J (per cell line) |
 
-RandomizedSearchCV is used to find optimal hyperparameters:
-
-```python
-{
-    'n_estimators': [100, 200, 300, 400, 500],
-    'max_depth': [10, 15, 20, 25, None],
-    'min_samples_split': [2, 5, 10, 15],
-    'min_samples_leaf': [1, 2, 4, 6]
-}
-```
-
-- **Search Strategy**: RandomizedSearchCV with cross-validation
-- **CV Folds**: 5-fold cross-validation
-- **Scoring Metric**: ROC-AUC
-
-### Key Features
-
-- **Avalon Fingerprints**: Structural fingerprints that capture molecular features relevant to biological activity
-- **Individual Task Models**: Each cell line has its own RandomForest model, allowing task-specific feature importance
-- **Z-score Normalization**: Drug sensitivity values are z-score normalized for binary classification
-- **Robust to Missing Data**: Individual models naturally handle missing values for specific cell lines
-
-### Model Architecture
+### Pipeline
 
 ```
-Input: SMILES strings
-  ↓
-Avalon Fingerprint Generation (2048 bits)
-  ↓
-Feature Matrix (n_samples × 2048)
-  ↓
-For each cell line:
-  ↓
-  RandomForest Classifier (hyperparameter optimized)
-  ↓
-  Binary prediction (sensitive/resistant)
+GDSC1/GDSC2 combined Z-scores
+  → Z-score threshold → binary sensitivity labels
+  → Fingerprint generation (Avalon / ECFP / ECFP_COUNT / MACCS)
+  → StandardScaler
+  → 7 classifiers × 4 split strategies (per cell line)
+  → Youden's J threshold per cell line
+  → AUC, F1, MCC, AUPRC reported per cell line
 ```
 
-### Data Source
+### Run (Z=0, primary analysis)
 
-- **GDSC1 & GDSC2**: Combined dataset with drug sensitivity measurements
-- **Format**: Multi-task format with z-score normalized IC50 values
-- **File**: `GDSC1_GDSC2_Combined_Dataset_With_SMILES_multitask_zscore_format.csv`
+```bash
+conda activate ai_ret
 
-### Evaluation Metrics
+# Data transformation:
+python PHENOTYPES_CLASSIFICATION_CODES_DATA/code/transform_for_multitask_zscore.py \
+    GDSC1_GDSC2_Combined_Dataset_With_SMILES.csv \
+    -o gdsc_multitask_threshold_zeo --threshold 0.0
 
-The model is evaluated using:
-- **AUC-ROC**: Primary metric for model selection
-- **Average Precision**: Area under precision-recall curve
-- **F1 Score**: Balance between precision and recall
-- **Accuracy**: Overall classification accuracy
-- **MCC**: Matthews Correlation Coefficient
-- **Confusion Matrix**: True/False positives and negatives
+# Unweighted (baseline):
+python PHENOTYPES_CLASSIFICATION_CODES_DATA/code/multitask_classifier_unweighted.py \
+    --data_folder gdsc_multitask_threshold_zeo_output \
+    --output_prefix gdsc_multitask_threshold_zeo \
+    --z_threshold 0.0 --no_save_models \
+    --results_path PHENOTYPES_CLASSIFICATION_CODES_DATA/results/z0_unweighted
 
-### File Location
-
-**Code:** `PHENOTYPES_CLASSIFICATION_CODES_DATA/multitask_classifier_zscore_INDIVIDUAL_FILES.py`
-
-**Data:** `PHENOTYPES_CLASSIFICATION_CODES_DATA/GDSC1_GDSC2_Combined_Dataset_With_SMILES.csv`
-
----
-
-## Usage Instructions
-
-### Multi-Kinase Classification
-
-#### Training a New Model
-
-```python
-from multitask_classifier_with_default_parameters_SINGLE_MODEL import MultiTaskDrugClassifier
-
-# Initialize classifier
-classifier = MultiTaskDrugClassifier(
-    data_path='path/to/kinase_data.csv',
-    results_path='./results',
-    models_path='./models'
-)
-
-# Load data and generate fingerprints
-classifier.load_data()
-classifier.generate_fingerprints()
-
-# Train and evaluate
-classifier.run_complete_pipeline()
-```
-
-#### Making Predictions with Saved Model
-
-```python
-# Load a saved model
-model, scaler, metadata = classifier.load_model('model_id')
-
-# Predict on new SMILES
-smiles_list = ['CCO', 'c1ccccc1', ...]
-predictions = classifier.predict_with_saved_model(
-    model_id='model_id',
-    smiles_list=smiles_list
-)
-```
-
-### Phenotypic Classification
-
-#### Training a New Model
-
-```python
-from multitask_classifier_zscore_INDIVIDUAL_FILES import MultiTaskDrugClassifier
-
-# Initialize classifier
-classifier = MultiTaskDrugClassifier(
-    data_path='GDSC1_GDSC2_Combined_Dataset_With_SMILES_multitask_zscore_format.csv',
-    results_path='./results'
-)
-
-# Run complete pipeline with hyperparameter tuning
-classifier.run_complete_pipeline(use_hyperparameter_tuning=True)
-```
-
-#### Loading Individual Models
-
-```python
-# Load models for a specific configuration
-model_data = classifier.load_individual_models('avalon_RandomForest_random')
-
-# Make predictions
-predictions, probabilities = classifier.predict_with_model(X, model_data)
+# Weighted (SAURON-RF):
+python PHENOTYPES_CLASSIFICATION_CODES_DATA/code/multitask_classifier_weighted.py \
+    --data_folder gdsc_multitask_threshold_zeo_output \
+    --output_prefix gdsc_multitask_threshold_zeo \
+    --z_threshold 0.0 --imbalance_strategy sample_weight \
+    --no_save_models --max_workers 32 \
+    --results_path PHENOTYPES_CLASSIFICATION_CODES_DATA/results/z0_weighted
 ```
 
 ---
 
 ## Model Evaluation Metrics
 
-### Classification Metrics Used
+All combinations report the following per split:
 
-| Metric | Description | Range | Interpretation |
-|--------|-------------|-------|----------------|
-| **AUC-ROC** | Area under ROC curve | 0-1 | Higher is better; 0.5 = random |
-| **F1 Score** | Harmonic mean of precision/recall | 0-1 | Higher is better; balances precision/recall |
-| **Accuracy** | Correct predictions / Total predictions | 0-1 | Higher is better |
-| **Precision** | True positives / (True + False positives) | 0-1 | Higher is better |
-| **Recall** | True positives / (True + False negatives) | 0-1 | Higher is better (sensitivity) |
-| **Specificity** | True negatives / (True + False positives) | 0-1 | Higher is better |
-| **MCC** | Matthews Correlation Coefficient | -1 to 1 | 1 = perfect, 0 = random, -1 = inverse |
+| Metric | Description |
+|--------|-------------|
+| AUC-ROC | Area under ROC curve; primary selection metric |
+| AUPRC | Area under precision-recall curve |
+| F1 | Harmonic mean of precision and recall |
+| MCC | Matthews Correlation Coefficient (−1 to 1; 0 = random) |
+| Accuracy | Fraction of correct predictions |
+| Precision | TP / (TP + FP) |
+| Recall | TP / (TP + FN) |
+| Specificity | TN / (TN + FP) |
 
-### Threshold Optimization
+### Threshold selection
 
-#### Multi-Kinase Model
-
-Uses a **fixed 0.5 probability threshold** for binary classification:
-- Simple and interpretable
-- Standard threshold for balanced classification
-- Applied uniformly across all kinase targets
-
-#### Phenotypic Model
-
-Uses **Youden's J statistic** to determine optimal classification thresholds per cell line:
-
-```
-J = Sensitivity + Specificity - 1 = TPR - FPR
-```
-
-This maximizes the difference between true positive rate and false positive rate, providing balanced classification performance tailored to each cell line's data distribution.
+- **Multi-kinase**: per-target Youden's J on pIC50 to set the activity/inactivity boundary during data preparation; probability cutoff fixed at 0.5 during evaluation.
+- **NSCLC phenotype**: Youden's J (J = TPR − FPR) applied post-hoc per cell line to select the optimal probability cutoff.
 
 ---
 
-## Saved Models
+## References
 
-### Model File Structure
-
-Both classification models save trained models as pickle files (`.pkl`) for compatibility with REINVENT and other tools.
-
-```
-
-### REINVENT Integration
-
-These models are designed to be used as scoring components in REINVENT:
-
----
+1. Sushko I, et al. Applicability Domains for Classification Problems: Benchmarking of Distance to Models for Ames Mutagenicity Set. *J. Chem. Inf. Model.* 2010;50:2094–2111. DOI: [10.1021/ci100253r](https://doi.org/10.1021/ci100253r)
+2. Lenhof K, et al. Simultaneous regression and classification for drug sensitivity prediction using an advanced random forest method. *Sci. Rep.* 2022;12:13458. DOI: [10.1038/s41598-022-17609-x](https://doi.org/10.1038/s41598-022-17609-x)
+3. Youden WJ. Index for rating diagnostic tests. *Cancer.* 1950;3(1):32–35.
+4. Rogers D, Hahn M. Extended-Connectivity Fingerprints. *J. Chem. Inf. Model.* 2010;50:742–754. DOI: [10.1021/ci100050t](https://doi.org/10.1021/ci100050t)
+5. Bemis GW, Murcko MA. The Properties of Known Drugs. 1. Molecular Frameworks. *J. Med. Chem.* 1996;39(15):2887–2893. DOI: [10.1021/jm9602928](https://doi.org/10.1021/jm9602928)
+6. Butina D. Unsupervised Data Base Clustering Based on Daylight's Fingerprint and Tanimoto Similarity: A Fast and Automated Way To Cluster Small and Large Data Sets *J. Chem. Inf. Comput. Sci.* 1999;39:747–750. DOI: [10.1021/ci9803381](https://doi.org/10.1021/ci9803381)
+7. McInnes L, et al. UMAP. *arXiv:1802.03426.* 2018.
+8. Garnett MJ, et al. Systematic identification of genomic markers of drug sensitivity in cancer cells. *Nature.* 2012;483:570–575. DOI: [10.1038/nature11005](https://doi.org/10.1038/nature11005)
+9. Iorio F, et al. A Landscape of Pharmacogenomic Interactions in Cancer. *Cell.* 2016;166:740–754. DOI: [10.1016/j.cell.2016.06.017](https://doi.org/10.1016/j.cell.2016.06.017)
+10. Pedregosa F, et al. Scikit-learn: Machine Learning in Python. *JMLR.* 2011;12:2825–2830.
