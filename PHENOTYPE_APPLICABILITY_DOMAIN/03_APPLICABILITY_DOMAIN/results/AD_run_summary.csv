@@ -1,0 +1,11 @@
+Script,TAG,Status,Elapsed,Files_collected,Output_files
+gdsc_classLAG_AD_z0.py,z0,ok,0:00:25,2,gdsc_classLAG_AD_z0_per_cellline.csv; gdsc_classLAG_AD_z0_summary.csv
+gdsc_classLAG_AD_z0_unwt.py,z0_unwt,ok,0:00:24,2,gdsc_classLAG_AD_z0_unwt_per_cellline.csv; gdsc_classLAG_AD_z0_unwt_summary.csv
+gdsc_classLAG_AD_z05.py,z05,ok,0:00:22,2,gdsc_classLAG_AD_z05_per_cellline.csv; gdsc_classLAG_AD_z05_summary.csv
+gdsc_classLAG_AD_z075.py,z075,ok,0:00:21,2,gdsc_classLAG_AD_z075_per_cellline.csv; gdsc_classLAG_AD_z075_summary.csv
+gdsc_classLAG_AD_z1.py,z1,ok,0:00:20,2,gdsc_classLAG_AD_z1_per_cellline.csv; gdsc_classLAG_AD_z1_summary.csv
+gdsc_consensus_AD_z0.py,z0,ok,0:00:30,3,gdsc_consensus_AD_z0_per_cellline.csv; gdsc_consensus_AD_z0_comparison.csv; gdsc_consensus_AD_z0_summary.csv
+gdsc_consensus_AD_z0_unwt.py,z0_unwt,ok,0:00:30,3,gdsc_consensus_AD_z0_unwt_per_cellline.csv; gdsc_consensus_AD_z0_unwt_comparison.csv; gdsc_consensus_AD_z0_unwt_summary.csv
+gdsc_consensus_AD_z05.py,z05,ok,0:00:29,3,gdsc_consensus_AD_z05_per_cellline.csv; gdsc_consensus_AD_z05_comparison.csv; gdsc_consensus_AD_z05_summary.csv
+gdsc_consensus_AD_z075.py,z075,ok,0:00:28,3,gdsc_consensus_AD_z075_per_cellline.csv; gdsc_consensus_AD_z075_comparison.csv; gdsc_consensus_AD_z075_summary.csv
+gdsc_consensus_AD_z1.py,z1,ok,0:00:27,3,gdsc_consensus_AD_z1_per_cellline.csv; gdsc_consensus_AD_z1_comparison.csv; gdsc_consensus_AD_z1_summary.csv

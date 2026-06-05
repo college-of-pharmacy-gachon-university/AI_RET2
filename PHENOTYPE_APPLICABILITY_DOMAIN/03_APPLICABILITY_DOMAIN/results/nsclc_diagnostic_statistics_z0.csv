@@ -1,0 +1,13 @@
+Configuration,Hypothesis,Test,Statistic,p_value,Interpretation
+z0,H1 - Wrong algorithm,"Kruskal-Wallis AUC across algorithms (RandomForest, GradientBoosting, LogisticRegression, SVM)",H=78.7160; AUC range=0.0297,5.7866e-17,"Algorithms differ statistically, but the practical AUC range is 0.0297 and the best mean AUC is 0.5662."
+z0,H1 - Overfitting / AD test,Paired Wilcoxon: CLASS-LAG AUC@10% vs AUC@100% (95 valid cell lines),W=1901.0; paired mean gain=0.0339,0.1595,"If AD filtering rescued the model, the top-confidence subset would show a large AUC gain."
+z0,H2 - Insufficient data,Pearson r: cell-line sample size vs mean AUC (108 cell lines),r=0.1749,0.0701,Tests whether larger cell-line datasets have higher AUC.
+z0,H2 - Class imbalance,Pearson r: percent sensitive vs mean AUC (108 cell lines),r=-0.2080,0.0308,Tests whether class balance explains AUC variation.
+z0,H2 - Class imbalance (balanced vs not),Mann-Whitney: balanced(n=35) vs imbalanced(n=73),U=1456.0; balanced=0.5574; imbalanced=0.5500,0.2426,Compares AUC in balanced and imbalanced cell lines.
+z0,H3 - Ranking / threshold issue,One-sample t-test: per-cell-line mean AUC vs 0.5,"t=14.4700; mean AUC=0.5524; 95% CI=[0.5452,0.5596]",6.0915e-27,"AUC is threshold-independent; a low AUC indicates weak ranking, not only poor calibration."
+z0,AD - Consensus model agreement,Best CONS-STD AUC coverage vs 100% coverage,best=0.5590 (CS_cov100); baseline=0.5590; gain=+0.0000,n/a,Checks whether selecting compounds with stronger consensus agreement improves AUC.
+z0,H4 - Feature insufficiency (variance decomposition),Additive variance decomposition of Z-score matrix,Drug=3.7%; Cell-line=18.0%; Residual=78.3%,n/a,Cell-line identity explains 4.8x more variance than drug identity.
+z0,"H4 - Feature insufficiency (structural vs response, AVALON)",Spearman r: pairwise Tanimoto (AVALON) vs pairwise response correlation (n=5000 drug pairs),r_s=0.0958,1.15e-11,r^2=0.92%: AVALON Tanimoto explains little response-profile similarity.
+z0,"H4 - Feature insufficiency (structural vs response, ECFP4)",Spearman r: pairwise Tanimoto (ECFP4) vs pairwise response correlation (n=5000 drug pairs),r_s=0.0426,2.57e-03,r^2=0.18%: ECFP4 Tanimoto explains little response-profile similarity.
+z0,"H4 - Feature insufficiency (structural vs response, MACCS)",Spearman r: pairwise Tanimoto (MACCS) vs pairwise response correlation (n=5000 drug pairs),r_s=0.0651,4.12e-06,r^2=0.42%: MACCS Tanimoto explains little response-profile similarity.
+z0,H4 - Feature insufficiency (within-drug response variance),Mean variance of drug response across 108 cell lines,Drug-across-cell-lines var=0.8820; Cell-line-across-drugs var=0.7399,n/a,High within-drug variance means the same drug behaves differently across cell-line contexts.

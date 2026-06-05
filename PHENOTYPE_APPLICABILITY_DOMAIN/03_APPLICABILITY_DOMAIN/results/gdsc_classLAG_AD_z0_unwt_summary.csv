@@ -1,0 +1,28 @@
+Metric,Value
+Source script,gdsc_classLAG_AD_z0_unwt.py
+Source results,/home/medicina/GDSC_ANALYSIS/results/z0_unweighted/gdsc_unweighted_results_20260522_154422.csv
+Z_THRESHOLD,0.0
+AD method,"CLASS-LAG = min(p, 1-p)"
+Fingerprint,Avalon 2048-bit
+Classifier,RandomForest n=100 seed=42 unweighted
+sample_weight,none (unweighted)
+Cell lines,108
+Mean % sensitive,37.6
+Overall AUC,0.5613
+Mean CLASS-LAG,0.3007
+% CLASS-LAG < 0.2,23.4
+% CLASS-LAG < 0.3,45.3
+Best AUC,0.6163
+Best coverage col,AUC_cov010
+Baseline AUC,0.5613
+Max AUC gain,0.055
+Mean AUC 10% coverage,0.6163
+Mean AUC 20% coverage,0.5849
+Mean AUC 30% coverage,0.5675
+Mean AUC 40% coverage,0.5566
+Mean AUC 50% coverage,0.5568
+Mean AUC 60% coverage,0.5606
+Mean AUC 70% coverage,0.5561
+Mean AUC 80% coverage,0.5512
+Mean AUC 90% coverage,0.5582
+Mean AUC 100% coverage,0.5613
