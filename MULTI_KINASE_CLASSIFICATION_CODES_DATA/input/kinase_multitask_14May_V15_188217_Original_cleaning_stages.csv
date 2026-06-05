@@ -1,0 +1,25 @@
+Target,Raw unique SMILES,Unique SMILES baseline,% removed → Unique SMILES baseline,After * / invalid removal,% removed → After * / invalid removal,After stereo dedup (final),% removed → After stereo dedup (final)
+Cyclin-dependent kinase 2/G1/S-specific cyclin-E1,3757,3757,0.0,3756,0.03,3598,4.21
+Dual specificity tyrosine-phosphorylation-regulated kinase 1A,2460,2460,0.0,2460,0.0,2326,5.45
+Glycogen synthase kinase-3 beta,3926,3926,0.0,3926,0.0,3798,3.26
+Interleukin-1 receptor-associated kinase 4,9903,9903,0.0,9900,0.03,9018,8.91
+Leucine-rich repeat serine/threonine-protein kinase 2,3185,3185,0.0,3185,0.0,3039,4.58
+Mitogen-activated protein kinase 1,5459,5459,0.0,5458,0.02,4885,10.5
+Mitogen-activated protein kinase 14,5188,5188,0.0,5187,0.02,5075,2.16
+Mitogen-activated protein kinase kinase kinase kinase 1,5614,5614,0.0,5614,0.0,5105,9.07
+Non-receptor tyrosine-protein kinase TYK2,4195,4195,0.0,4195,0.0,3827,8.77
+"Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit alpha isoform",8111,8111,0.0,8110,0.01,7805,3.76
+"Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit delta isoform",10231,10231,0.0,10231,0.0,9587,6.29
+"Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit gamma isoform",6306,6306,0.0,6306,0.0,6076,3.65
+RAF proto-oncogene serine/threonine-protein kinase,2895,2895,0.0,2895,0.0,2806,3.07
+Rho-associated protein kinase 2,5643,5643,0.0,5643,0.0,5428,3.81
+Serine/threonine-protein kinase ATR,1567,1567,0.0,1567,0.0,1508,3.77
+Serine/threonine-protein kinase B-raf,3112,3112,0.0,3112,0.0,3069,1.38
+Serine/threonine-protein kinase mTOR,4923,4923,0.0,4922,0.02,4750,3.49
+Tyrosine-protein kinase ABL1,2057,2057,0.0,2057,0.0,2013,2.14
+Tyrosine-protein kinase BTK,12305,12305,0.0,12305,0.0,11063,10.09
+Tyrosine-protein kinase JAK1,9346,9346,0.0,9346,0.0,8385,10.28
+Tyrosine-protein kinase JAK2,11772,11772,0.0,11772,0.0,10677,9.3
+Tyrosine-protein kinase JAK3,7972,7972,0.0,7972,0.0,7434,6.75
+Tyrosine-protein kinase SYK,5430,5430,0.0,5430,0.0,5267,3.0
+TOTAL (global unique),100791,100791,0.0,100784,0.01,94213,6.52

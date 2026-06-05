@@ -1,0 +1,16 @@
+Metric,Value
+unique_smiles_baseline,100791.0
+total_entries_at_baseline,188217.0
+removed_wildcard_smiles,9.0
+removed_invalid_smiles,0.0
+stereo_duplicate_groups,5143.0
+unique_inchikey_blocks,94213.0
+original_entries,188207.0
+processed_entries,188207.0
+compounds,94213.0
+targets,23.0
+sparsity_percent,94.16036465012905
+pic50_mean,7.05568231224883
+pic50_std,1.3505222844785387
+pic50_min,1.3000000031431453
+pic50_max,12.585026652029182

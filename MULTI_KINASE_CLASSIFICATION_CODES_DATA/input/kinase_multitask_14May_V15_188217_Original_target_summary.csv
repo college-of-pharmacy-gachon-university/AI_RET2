@@ -1,0 +1,24 @@
+Target,Threshold_pIC50,N_total,N_active,N_inactive,Ratio_active_pct
+Cyclin-dependent kinase 2/G1/S-specific cyclin-E1,6.9626,3598,1796,1802,49.92
+Dual specificity tyrosine-phosphorylation-regulated kinase 1A,6.4802,2326,1162,1164,49.96
+Glycogen synthase kinase-3 beta,6.1549,3798,1897,1901,49.95
+Interleukin-1 receptor-associated kinase 4,7.6202,9018,4501,4517,49.91
+Leucine-rich repeat serine/threonine-protein kinase 2,7.3098,3039,1373,1666,45.18
+Mitogen-activated protein kinase 1,7.7258,4885,2432,2453,49.79
+Mitogen-activated protein kinase 14,6.8539,5075,2516,2559,49.58
+Mitogen-activated protein kinase kinase kinase kinase 1,7.0088,5105,1805,3300,35.36
+Non-receptor tyrosine-protein kinase TYK2,7.0026,3827,1865,1962,48.73
+"Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit alpha isoform",6.3206,7805,3899,3906,49.96
+"Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit delta isoform",7.0044,9587,4547,5040,47.43
+"Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit gamma isoform",6.3307,6076,3037,3039,49.98
+RAF proto-oncogene serine/threonine-protein kinase,8.0132,2806,1371,1435,48.86
+Rho-associated protein kinase 2,7.0044,5428,2477,2951,45.63
+Serine/threonine-protein kinase ATR,7.1249,1508,753,755,49.93
+Serine/threonine-protein kinase B-raf,7.304,3069,1527,1542,49.76
+Serine/threonine-protein kinase mTOR,7.0615,4750,2371,2379,49.92
+Tyrosine-protein kinase ABL1,6.27,2013,1005,1008,49.93
+Tyrosine-protein kinase BTK,7.6024,11063,5523,5540,49.92
+Tyrosine-protein kinase JAK1,7.2606,8385,4177,4208,49.82
+Tyrosine-protein kinase JAK2,6.9269,10677,5335,5342,49.97
+Tyrosine-protein kinase JAK3,6.6861,7434,3716,3718,49.99
+Tyrosine-protein kinase SYK,7.2632,5267,2311,2956,43.88
