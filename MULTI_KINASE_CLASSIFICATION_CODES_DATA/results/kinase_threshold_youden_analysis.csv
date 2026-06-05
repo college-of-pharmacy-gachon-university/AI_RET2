@@ -1,0 +1,24 @@
+Target,N_compounds,N_train,N_test,N_active_test,Active_fraction_test,AUC,Youden_Optimal_Threshold,Youden_J,Sensitivity_at_Youden,Specificity_at_Youden,Specificity_at_0p3,False_Exclusion_Rate_at_0p3,NPV_at_0p3,Sensitivity_at_0p3,Is_0p3_below_Youden
+Cyclin-dependent kinase 2/G1/S-specific cyclin-E1,3598,2878,720,360,0.5,0.9876,0.49,0.8944,0.9417,0.9528,0.9222,0.0778,0.9651,0.9667,1
+Dual specificity tyrosine-phosphorylation-regulated kinase 1A,2326,1860,466,233,0.5,0.9119,0.5,0.7082,0.867,0.8412,0.618,0.382,0.9231,0.9485,1
+Glycogen synthase kinase-3 beta,3798,3038,760,380,0.5,0.9157,0.44,0.6789,0.8632,0.8158,0.7053,0.2947,0.9054,0.9263,1
+Interleukin-1 receptor-associated kinase 4,9018,7214,1804,901,0.499,0.9711,0.58,0.8326,0.9001,0.9324,0.8217,0.1783,0.9587,0.9645,1
+Leucine-rich repeat serine/threonine-protein kinase 2,3039,2431,608,276,0.454,0.9354,0.45,0.7425,0.9022,0.8404,0.7681,0.2319,0.948,0.9493,1
+Mitogen-activated protein kinase 1,4885,3908,977,487,0.498,0.9324,0.5,0.7135,0.8747,0.8388,0.7122,0.2878,0.951,0.963,1
+Mitogen-activated protein kinase 14,5075,4060,1015,507,0.5,0.9183,0.515,0.6788,0.8304,0.8484,0.6969,0.3031,0.9124,0.9329,1
+Mitogen-activated protein kinase kinase kinase kinase 1,5105,4084,1021,361,0.354,0.9922,0.46,0.9178,0.9557,0.9621,0.9394,0.0606,0.9841,0.9723,1
+Non-receptor tyrosine-protein kinase TYK2,3827,3061,766,373,0.487,0.9213,0.51,0.711,0.8713,0.8397,0.6565,0.3435,0.9247,0.9437,1
+"Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit alpha isoform",7805,6244,1561,780,0.5,0.938,0.45,0.7284,0.909,0.8195,0.7157,0.2843,0.9348,0.95,1
+"Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit delta isoform",9587,7669,1918,911,0.475,0.9707,0.36,0.8141,0.9561,0.858,0.8431,0.1569,0.9692,0.9704,1
+"Phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit gamma isoform",6076,4860,1216,608,0.5,0.9356,0.5,0.7286,0.8372,0.8914,0.7747,0.2253,0.904,0.9178,1
+RAF proto-oncogene serine/threonine-protein kinase,2806,2244,562,275,0.489,0.977,0.69,0.8718,0.9345,0.9373,0.885,0.115,0.9695,0.9709,1
+Rho-associated protein kinase 2,5428,4342,1086,496,0.457,0.9173,0.39,0.6859,0.869,0.8169,0.7542,0.2458,0.9045,0.9052,1
+Serine/threonine-protein kinase ATR,1508,1206,302,151,0.5,0.9452,0.49,0.7815,0.8609,0.9205,0.8344,0.1656,0.9,0.9073,1
+Serine/threonine-protein kinase B-raf,3069,2455,614,306,0.498,0.9568,0.54,0.7784,0.8758,0.9026,0.7532,0.2468,0.9547,0.9641,1
+Serine/threonine-protein kinase mTOR,4750,3800,950,474,0.499,0.9383,0.44,0.7243,0.8924,0.8319,0.7311,0.2689,0.933,0.9473,1
+Tyrosine-protein kinase ABL1,2013,1610,403,201,0.499,0.9426,0.58,0.7665,0.8308,0.9356,0.7772,0.2228,0.9128,0.9254,1
+Tyrosine-protein kinase BTK,11063,8850,2213,1105,0.499,0.9145,0.5533,0.6846,0.8389,0.8457,0.6534,0.3466,0.9165,0.9403,1
+Tyrosine-protein kinase JAK1,8385,6708,1677,836,0.499,0.9657,0.46,0.8343,0.9222,0.912,0.8419,0.1581,0.9516,0.9569,1
+Tyrosine-protein kinase JAK2,10677,8541,2136,1067,0.5,0.9439,0.51,0.7501,0.9044,0.8457,0.7353,0.2647,0.9424,0.955,1
+Tyrosine-protein kinase JAK3,7434,5947,1487,743,0.5,0.9486,0.65,0.7753,0.8331,0.9422,0.7419,0.2581,0.9262,0.9408,1
+Tyrosine-protein kinase SYK,5267,4213,1054,463,0.439,0.9232,0.5,0.7245,0.8531,0.8714,0.7682,0.2318,0.919,0.9136,1
