@@ -15,26 +15,30 @@ PHENOTYPE_APPLICABILITY_DOMAIN/
 ├── 03_APPLICABILITY_DOMAIN/
 │   ├── code/
 │   │   ├── run_all_AD.py
-│   │   ├── gdsc_classLAG_AD_z0.py
-│   │   ├── gdsc_classLAG_AD_z0_unwt.py
+│   │   ├── gdsc_classLAG_AD_z0.py           # original run (10–100% coverage)
+│   │   ├── gdsc_classLAG_AD_z0_test.py      # extended run (1–100% coverage) [NEW]
+│   │   ├── gdsc_classLAG_AD_z0_unwt.py      # original run (10–100% coverage)
+│   │   ├── gdsc_classLAG_AD_z0_unwt_test.py # extended run (1–100% coverage) [NEW]
 │   │   ├── gdsc_classLAG_AD_z05.py
 │   │   ├── gdsc_classLAG_AD_z075.py
 │   │   ├── gdsc_classLAG_AD_z1.py
-│   │   ├── gdsc_consensus_AD_z0.py
-│   │   ├── gdsc_consensus_AD_z0_unwt.py
+│   │   ├── gdsc_consensus_AD_z0.py           # original run (10–100% coverage)
+│   │   ├── gdsc_consensus_AD_z0_test.py      # extended run (1–100% coverage) [NEW]
+│   │   ├── gdsc_consensus_AD_z0_unwt.py      # original run (10–100% coverage)
+│   │   ├── gdsc_consensus_AD_z0_unwt_test.py # extended run (1–100% coverage) [NEW]
 │   │   ├── gdsc_consensus_AD_z05.py
 │   │   ├── gdsc_consensus_AD_z075.py
 │   │   ├── gdsc_consensus_AD_z1.py
 │   │   └── verify_classLAG_table_S5.py
 │   └── results/
 │       ├── AD_run_summary.csv
-│       ├── gdsc_classLAG_AD_z0_per_cellline.csv / _summary.csv
-│       ├── gdsc_classLAG_AD_z0_unwt_per_cellline.csv / _summary.csv
+│       ├── gdsc_classLAG_AD_z0_per_cellline.csv / _summary.csv   # updated: 1–100% coverage [REV]
+│       ├── gdsc_classLAG_AD_z0_unwt_per_cellline.csv / _summary.csv  # updated: 1–100% [REV]
 │       ├── gdsc_classLAG_AD_z05_per_cellline.csv / _summary.csv
 │       ├── gdsc_classLAG_AD_z075_per_cellline.csv / _summary.csv
 │       ├── gdsc_classLAG_AD_z1_per_cellline.csv / _summary.csv
-│       ├── gdsc_consensus_AD_z0_per_cellline.csv / _summary.csv / _comparison.csv
-│       ├── gdsc_consensus_AD_z0_unwt_per_cellline.csv / _summary.csv / _comparison.csv
+│       ├── gdsc_consensus_AD_z0_per_cellline.csv / _summary.csv / _comparison.csv  # updated: 1–100% [REV]
+│       ├── gdsc_consensus_AD_z0_unwt_per_cellline.csv / _summary.csv / _comparison.csv  # updated: 1–100% [REV]
 │       ├── gdsc_consensus_AD_z05_per_cellline.csv / _summary.csv / _comparison.csv
 │       ├── gdsc_consensus_AD_z075_per_cellline.csv / _summary.csv / _comparison.csv
 │       ├── gdsc_consensus_AD_z1_per_cellline.csv / _summary.csv / _comparison.csv
@@ -68,30 +72,34 @@ Evaluates whether test compounds fall within the applicability domain of the NSC
 
 ### CLASS-LAG AD
 
-Lazy-learning AD: for each prediction, compares the test compound to its nearest training neighbours in chemical space and checks whether the label distribution is consistent.
+Lazy-learning AD: the CLASS-LAG score = min(p, 1−p) from a per-cell-line Random Forest (Sushko et al. 2010, Eq. 2). Test compounds are ranked by ascending CLASS-LAG (most confident first) and mean ROC-AUC is evaluated at each coverage level.
+
+**Coverage range:** the `_test.py` scripts (revised second submission) evaluate coverage from **1% to 100%** in fine steps (1, 2, 3, 4, 5, 6, 8, 9, 10, 20, …, 100%). The original `_z0.py` / `_z0_unwt.py` scripts evaluated 10–100% only. The result CSVs in this repository now contain 1–100% coverage (updated for second revision).
 
 | File pattern | Description |
 |---|---|
-| `gdsc_classLAG_AD_z0_per_cellline.csv` | CLASS-LAG AD per cell line (Z=0, weighted). In-AD fraction and coverage statistics. Cited in Table S7. |
-| `gdsc_classLAG_AD_z0_summary.csv` | Summary statistics across cell lines (Z=0, weighted). |
-| `gdsc_classLAG_AD_z0_unwt_*.csv` | Same for Z=0 unweighted. |
-| `gdsc_classLAG_AD_z05_*.csv` | Same for Z=−0.5. |
-| `gdsc_classLAG_AD_z075_*.csv` | Same for Z=−0.75. |
-| `gdsc_classLAG_AD_z1_*.csv` | Same for Z=−1.0. |
+| `gdsc_classLAG_AD_z0_per_cellline.csv` | Per-cell-line mean AUC at each coverage level (Z=0, weighted RF). Source for Table S7. |
+| `gdsc_classLAG_AD_z0_summary.csv` | Summary across 108 cell lines (Z=0, weighted). Best AUC = 0.710 at 3% coverage. |
+| `gdsc_classLAG_AD_z0_unwt_*.csv` | Same for Z=0 unweighted. Best AUC = 0.674 at 1–2% coverage. |
+| `gdsc_classLAG_AD_z05_*.csv` | Same for Z=−0.5 (10–100% coverage only). |
+| `gdsc_classLAG_AD_z075_*.csv` | Same for Z=−0.75 (10–100% coverage only). |
+| `gdsc_classLAG_AD_z1_*.csv` | Same for Z=−1.0 (10–100% coverage only). |
 
 ### Consensus AD
 
-Combines Tanimoto structural similarity with response concordance to define whether a compound pair is within domain.
+12-model ensemble (AVALON × ECFP × MACCS fingerprints, RF × LR × SVM × XGBoost algorithms). CONS-STD = standard deviation of the 12 model probabilities (Sushko Eq. 3); CONS-STD-PROB = Gaussian tail probability (Eqs. 4–5); CLASS-LAG = min(p̄, 1−p̄) from the 12-model mean probability.
+
+**Coverage range:** the `_test.py` scripts evaluate 1–100% coverage. Result CSVs for z0 and z0_unwt are updated to 1–100% for the second revision.
 
 | File pattern | Description |
 |---|---|
-| `gdsc_consensus_AD_z0_per_cellline.csv` | Consensus AD per cell line (Z=0, weighted). Cited in Table S8. |
-| `gdsc_consensus_AD_z0_summary.csv` | Consensus AD summary statistics (Z=0, weighted). |
-| `gdsc_consensus_AD_z0_comparison.csv` | In-AD vs out-of-AD model performance comparison (Z=0, weighted). |
-| `gdsc_consensus_AD_z0_unwt_*.csv` | Same for Z=0 unweighted. |
-| `gdsc_consensus_AD_z05_*.csv` | Same for Z=−0.5. |
-| `gdsc_consensus_AD_z075_*.csv` | Same for Z=−0.75. |
-| `gdsc_consensus_AD_z1_*.csv` | Same for Z=−1.0. |
+| `gdsc_consensus_AD_z0_per_cellline.csv` | Per-cell-line mean AUC at each coverage level (Z=0, weighted). Source for Table S8. |
+| `gdsc_consensus_AD_z0_summary.csv` | Summary across 108 cell lines (Z=0, weighted). Consensus CLASS-LAG best AUC = **0.769** at 1–2% coverage. |
+| `gdsc_consensus_AD_z0_comparison.csv` | Coverage vs mean AUC table for CLASS-LAG, CONS-STD, and CONS-STD-PROB (Z=0, weighted). Used for Figure S17 Panel A. |
+| `gdsc_consensus_AD_z0_unwt_*.csv` | Same for Z=0 unweighted. CONS-STD-PROB best AUC = 0.692 at 1–2%. |
+| `gdsc_consensus_AD_z05_*.csv` | Same for Z=−0.5 (10–100% coverage only). |
+| `gdsc_consensus_AD_z075_*.csv` | Same for Z=−0.75 (10–100% coverage only). |
+| `gdsc_consensus_AD_z1_*.csv` | Same for Z=−1.0 (10–100% coverage only). |
 
 ### Master summary
 
@@ -102,19 +110,31 @@ Combines Tanimoto structural similarity with response concordance to define whet
 ### Running the AD scripts
 
 ```bash
-conda activate ai_ret
+conda activate drugai
 
-# Run all AD scripts (recommended):
+# --- Extended coverage (1–100%): use the _test.py scripts ---
+# CLASS-LAG, Z=0, weighted RF:
+python 03_APPLICABILITY_DOMAIN/code/gdsc_classLAG_AD_z0_test.py
+
+# CLASS-LAG, Z=0, unweighted RF:
+python 03_APPLICABILITY_DOMAIN/code/gdsc_classLAG_AD_z0_unwt_test.py
+
+# Consensus 12-model, Z=0, weighted:
+python 03_APPLICABILITY_DOMAIN/code/gdsc_consensus_AD_z0_test.py
+
+# Consensus 12-model, Z=0, unweighted:
+python 03_APPLICABILITY_DOMAIN/code/gdsc_consensus_AD_z0_unwt_test.py
+
+# --- Original coverage (10–100%): use the non-_test scripts ---
 python 03_APPLICABILITY_DOMAIN/code/run_all_AD.py
 
-# Skip scripts whose output files already exist:
+# Or skip scripts whose output already exists:
 python 03_APPLICABILITY_DOMAIN/code/run_all_AD.py --skip-done
-
-# Or run individual scripts directly, e.g.:
-python 03_APPLICABILITY_DOMAIN/code/gdsc_classLAG_AD_z0.py
 ```
 
 All outputs are written to `03_APPLICABILITY_DOMAIN/results/`.
+
+> **Note:** The `_test.py` scripts (z0 and z0_unwt) are the canonical scripts for the second revision. They extend coverage evaluation to 1% and produce the results reported in Tables S7–S8 and Figure S17 of the revised manuscript.
 
 ---
 
