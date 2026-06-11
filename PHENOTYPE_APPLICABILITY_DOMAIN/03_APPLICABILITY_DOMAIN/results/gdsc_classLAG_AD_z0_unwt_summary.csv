@@ -12,10 +12,19 @@ Overall AUC,0.5613
 Mean CLASS-LAG,0.3007
 % CLASS-LAG < 0.2,23.4
 % CLASS-LAG < 0.3,45.3
-Best AUC,0.6163
-Best coverage col,AUC_cov010
+Best AUC,0.6744
+Best coverage col,AUC_cov001
 Baseline AUC,0.5613
-Max AUC gain,0.055
+Max AUC gain,0.1131
+Mean AUC 1% coverage,0.6744
+Mean AUC 2% coverage,0.6744
+Mean AUC 3% coverage,0.65
+Mean AUC 4% coverage,0.6492
+Mean AUC 5% coverage,0.6735
+Mean AUC 6% coverage,0.6611
+Mean AUC 6% coverage,0.6611
+Mean AUC 8% coverage,0.623
+Mean AUC 9% coverage,0.6049
 Mean AUC 10% coverage,0.6163
 Mean AUC 20% coverage,0.5849
 Mean AUC 30% coverage,0.5675
